@@ -1,0 +1,71 @@
+Performing C++ SOURCE FILE Test HAVE_ISO_STRDUP failed with the following output:
+Change Dir: /workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/workspaces/AndroidTagLib/android-sdk/cmake/3.22.1/bin/ninja cmTC_8e521 && [1/2] Building CXX object CMakeFiles/cmTC_8e521.dir/src.cxx.o
+FAILED: CMakeFiles/cmTC_8e521.dir/src.cxx.o 
+/workspaces/AndroidTagLib/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android23 --sysroot=/workspaces/AndroidTagLib/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/sysroot -DHAVE_ISO_STRDUP  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -Wall  -fPIE -MD -MT CMakeFiles/cmTC_8e521.dir/src.cxx.o -MF CMakeFiles/cmTC_8e521.dir/src.cxx.o.d -o CMakeFiles/cmTC_8e521.dir/src.cxx.o -c /workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/CMakeFiles/CMakeTmp/src.cxx
+/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/CMakeFiles/CMakeTmp/src.cxx:4:5: error: use of undeclared identifier '_strdup'; did you mean 'strdup'?
+    _strdup(0);
+    ^~~~~~~
+    strdup
+/workspaces/AndroidTagLib/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/string.h:110:7: note: 'strdup' declared here
+char* strdup(const char* __s);
+      ^
+1 error generated.
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+
+  #include <cstring>
+  int main() {
+    _strdup(0);
+    return 0;
+  }
+
+Determining if the function __RTTI___ exists in the Crun failed with the following output:
+Change Dir: /workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/workspaces/AndroidTagLib/android-sdk/cmake/3.22.1/bin/ninja cmTC_b8896 && [1/2] Building C object CMakeFiles/cmTC_b8896.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_b8896
+FAILED: cmTC_b8896 
+: && /workspaces/AndroidTagLib/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/workspaces/AndroidTagLib/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -Wall -DCHECK_FUNCTION_EXISTS=__RTTI___ -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_b8896.dir/CheckFunctionExists.c.o -o cmTC_b8896  -lCrun  -latomic -lm && :
+ld: error: unable to find library -lCrun
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+ninja: build stopped: subcommand failed.
+
+
+
+Determining if the include file cpuid.h exists failed with the following output:
+Change Dir: /workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/workspaces/AndroidTagLib/android-sdk/cmake/3.22.1/bin/ninja cmTC_bf50b && [1/2] Building C object CMakeFiles/cmTC_bf50b.dir/CheckIncludeFile.c.o
+FAILED: CMakeFiles/cmTC_bf50b.dir/CheckIncludeFile.c.o 
+/workspaces/AndroidTagLib/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/workspaces/AndroidTagLib/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fPIE -MD -MT CMakeFiles/cmTC_bf50b.dir/CheckIncludeFile.c.o -MF CMakeFiles/cmTC_bf50b.dir/CheckIncludeFile.c.o.d -o CMakeFiles/cmTC_bf50b.dir/CheckIncludeFile.c.o -c /workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+In file included from /workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/CMakeFiles/CMakeTmp/CheckIncludeFile.c:1:
+/workspaces/AndroidTagLib/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/lib64/clang/14.0.6/include/cpuid.h:14:2: error: this header is for x86 only
+#error this header is for x86 only
+ ^
+/workspaces/AndroidTagLib/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/lib64/clang/14.0.6/include/cpuid.h:287:5: error: invalid output constraint '=a' in asm
+    __cpuid(__leaf, __eax, __ebx, __ecx, __edx);
+    ^
+/workspaces/AndroidTagLib/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/lib64/clang/14.0.6/include/cpuid.h:252:11: note: expanded from macro '__cpuid'
+        : "=a"(__eax), "=r" (__ebx), "=c"(__ecx), "=d"(__edx) \
+          ^
+/workspaces/AndroidTagLib/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/lib64/clang/14.0.6/include/cpuid.h:302:5: error: invalid output constraint '=a' in asm
+    __cpuid(__leaf, *__eax, *__ebx, *__ecx, *__edx);
+    ^
+/workspaces/AndroidTagLib/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/lib64/clang/14.0.6/include/cpuid.h:252:11: note: expanded from macro '__cpuid'
+        : "=a"(__eax), "=r" (__ebx), "=c"(__ecx), "=d"(__edx) \
+          ^
+/workspaces/AndroidTagLib/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/lib64/clang/14.0.6/include/cpuid.h:316:5: error: invalid output constraint '=a' in asm
+    __cpuid_count(__leaf, __subleaf, *__eax, *__ebx, *__ecx, *__edx);
+    ^
+/workspaces/AndroidTagLib/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/lib64/clang/14.0.6/include/cpuid.h:259:11: note: expanded from macro '__cpuid_count'
+        : "=a"(__eax), "=r" (__ebx), "=c"(__ecx), "=d"(__edx) \
+          ^
+4 errors generated.
+ninja: build stopped: subcommand failed.
+
+
+

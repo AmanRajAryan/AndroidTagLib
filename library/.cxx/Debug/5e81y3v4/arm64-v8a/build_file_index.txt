@@ -1,0 +1,17 @@
+/workspaces/AndroidTagLib/library/CMakeLists.txt
+/workspaces/AndroidTagLib/library/taglib/3rdparty/utfcpp/CMakeLists.txt
+/workspaces/AndroidTagLib/library/taglib/CMakeLists.txt
+/workspaces/AndroidTagLib/library/taglib/ConfigureChecks.cmake
+/workspaces/AndroidTagLib/library/taglib/Doxyfile.cmake
+/workspaces/AndroidTagLib/library/taglib/bindings/CMakeLists.txt
+/workspaces/AndroidTagLib/library/taglib/bindings/c/CMakeLists.txt
+/workspaces/AndroidTagLib/library/taglib/bindings/c/taglib_c.pc.cmake
+/workspaces/AndroidTagLib/library/taglib/cmake/modules/FindCppUnit.cmake
+/workspaces/AndroidTagLib/library/taglib/cmake/modules/MacroEnsureVersion.cmake
+/workspaces/AndroidTagLib/library/taglib/cmake_uninstall.cmake.in
+/workspaces/AndroidTagLib/library/taglib/config.h.cmake
+/workspaces/AndroidTagLib/library/taglib/taglib-config.cmake
+/workspaces/AndroidTagLib/library/taglib/taglib-config.cmake.in
+/workspaces/AndroidTagLib/library/taglib/taglib.pc.cmake
+/workspaces/AndroidTagLib/library/taglib/taglib/CMakeLists.txt
+/workspaces/AndroidTagLib/library/taglib/taglib/taglib_config.h.cmake

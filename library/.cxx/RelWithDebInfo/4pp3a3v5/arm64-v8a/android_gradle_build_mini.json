@@ -1,0 +1,290 @@
+{
+  "buildFiles": [
+    "/workspaces/AndroidTagLib/library/CMakeLists.txt",
+    "/workspaces/AndroidTagLib/library/jni/libogg-1.3.5/CMakeLists.txt",
+    "/workspaces/AndroidTagLib/library/jni/libogg-1.3.5/cmake/CheckSizes.cmake",
+    "/workspaces/AndroidTagLib/library/jni/libogg-1.3.5/cmake/OggConfig.cmake.in",
+    "/workspaces/AndroidTagLib/library/jni/libvorbis-1.3.7/CMakeLists.txt",
+    "/workspaces/AndroidTagLib/library/jni/libvorbis-1.3.7/cmake/VorbisConfig.cmake.in",
+    "/workspaces/AndroidTagLib/library/jni/libvorbis-1.3.7/lib/CMakeLists.txt",
+    "/workspaces/AndroidTagLib/library/jni/opus-1.3.1/CMakeLists.txt",
+    "/workspaces/AndroidTagLib/library/jni/opus-1.3.1/OpusConfig.cmake.in",
+    "/workspaces/AndroidTagLib/library/jni/opus-1.3.1/config.h.cmake.in",
+    "/workspaces/AndroidTagLib/library/jni/opus-1.3.1/opus_config.cmake",
+    "/workspaces/AndroidTagLib/library/jni/opus-1.3.1/opus_functions.cmake",
+    "/workspaces/AndroidTagLib/library/jni/opus-1.3.1/opus_sources.cmake",
+    "/workspaces/AndroidTagLib/library/jni/opusfile-0.12/CMakeLists.txt",
+    "/workspaces/AndroidTagLib/library/taglib/3rdparty/utfcpp/CMakeLists.txt",
+    "/workspaces/AndroidTagLib/library/taglib/CMakeLists.txt",
+    "/workspaces/AndroidTagLib/library/taglib/ConfigureChecks.cmake",
+    "/workspaces/AndroidTagLib/library/taglib/Doxyfile.cmake",
+    "/workspaces/AndroidTagLib/library/taglib/bindings/CMakeLists.txt",
+    "/workspaces/AndroidTagLib/library/taglib/bindings/c/CMakeLists.txt",
+    "/workspaces/AndroidTagLib/library/taglib/bindings/c/taglib_c.pc.cmake",
+    "/workspaces/AndroidTagLib/library/taglib/cmake/modules/FindCppUnit.cmake",
+    "/workspaces/AndroidTagLib/library/taglib/cmake/modules/MacroEnsureVersion.cmake",
+    "/workspaces/AndroidTagLib/library/taglib/cmake_uninstall.cmake.in",
+    "/workspaces/AndroidTagLib/library/taglib/config.h.cmake",
+    "/workspaces/AndroidTagLib/library/taglib/taglib-config.cmake",
+    "/workspaces/AndroidTagLib/library/taglib/taglib-config.cmake.in",
+    "/workspaces/AndroidTagLib/library/taglib/taglib.pc.cmake",
+    "/workspaces/AndroidTagLib/library/taglib/taglib/CMakeLists.txt",
+    "/workspaces/AndroidTagLib/library/taglib/taglib/taglib_config.h.cmake"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/workspaces/AndroidTagLib/android-sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/workspaces/AndroidTagLib/android-sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "vorbis::@e56064d81dc67d40fb15": {
+      "artifactName": "vorbis",
+      "abi": "arm64-v8a",
+      "output": "/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/jni/libvorbis-1.3.7/lib/libvorbis.a",
+      "runtimeFiles": []
+    },
+    "test_opus_api::@922c6de6b8c01038a208": {
+      "artifactName": "test_opus_api",
+      "abi": "arm64-v8a",
+      "output": "/workspaces/AndroidTagLib/library/build/intermediates/cxx/RelWithDebInfo/4pp3a3v5/obj/arm64-v8a/test_opus_api",
+      "runtimeFiles": []
+    },
+    "test_bitwise::@9eaf6ae66da5c813ae51": {
+      "artifactName": "test_bitwise",
+      "abi": "arm64-v8a",
+      "output": "/workspaces/AndroidTagLib/library/build/intermediates/cxx/RelWithDebInfo/4pp3a3v5/obj/arm64-v8a/test_bitwise",
+      "runtimeFiles": []
+    },
+    "Experimental::@3616494f9d84e65b3f7f": {
+      "artifactName": "Experimental",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ExperimentalConfigure::@3616494f9d84e65b3f7f": {
+      "artifactName": "ExperimentalConfigure",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "test_opus_decode::@922c6de6b8c01038a208": {
+      "artifactName": "test_opus_decode",
+      "abi": "arm64-v8a",
+      "output": "/workspaces/AndroidTagLib/library/build/intermediates/cxx/RelWithDebInfo/4pp3a3v5/obj/arm64-v8a/test_opus_decode",
+      "runtimeFiles": []
+    },
+    "ContinuousTest::@3616494f9d84e65b3f7f": {
+      "artifactName": "ContinuousTest",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "tag_c::@9cdc347eb927be3a3816": {
+      "artifactName": "tag_c",
+      "abi": "arm64-v8a",
+      "output": "/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/taglib/bindings/c/libtag_c.a",
+      "runtimeFiles": []
+    },
+    "ExperimentalTest::@3616494f9d84e65b3f7f": {
+      "artifactName": "ExperimentalTest",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "NightlyTest::@3616494f9d84e65b3f7f": {
+      "artifactName": "NightlyTest",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "opusfile::@c4d67018860c8b252503": {
+      "artifactName": "opusfile",
+      "abi": "arm64-v8a",
+      "output": "/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/jni/opusfile-0.12/libopusfile.a",
+      "runtimeFiles": []
+    },
+    "test_framing::@9eaf6ae66da5c813ae51": {
+      "artifactName": "test_framing",
+      "abi": "arm64-v8a",
+      "output": "/workspaces/AndroidTagLib/library/build/intermediates/cxx/RelWithDebInfo/4pp3a3v5/obj/arm64-v8a/test_framing",
+      "runtimeFiles": []
+    },
+    "vorbisfile::@e56064d81dc67d40fb15": {
+      "artifactName": "vorbisfile",
+      "abi": "arm64-v8a",
+      "output": "/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/jni/libvorbis-1.3.7/lib/libvorbisfile.a",
+      "runtimeFiles": []
+    },
+    "ExperimentalCoverage::@3616494f9d84e65b3f7f": {
+      "artifactName": "ExperimentalCoverage",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "NightlyCoverage::@3616494f9d84e65b3f7f": {
+      "artifactName": "NightlyCoverage",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "test_opus_encode::@922c6de6b8c01038a208": {
+      "artifactName": "test_opus_encode",
+      "abi": "arm64-v8a",
+      "output": "/workspaces/AndroidTagLib/library/build/intermediates/cxx/RelWithDebInfo/4pp3a3v5/obj/arm64-v8a/test_opus_encode",
+      "runtimeFiles": []
+    },
+    "NightlyConfigure::@3616494f9d84e65b3f7f": {
+      "artifactName": "NightlyConfigure",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ContinuousCoverage::@3616494f9d84e65b3f7f": {
+      "artifactName": "ContinuousCoverage",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ContinuousSubmit::@3616494f9d84e65b3f7f": {
+      "artifactName": "ContinuousSubmit",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "NightlyUpdate::@3616494f9d84e65b3f7f": {
+      "artifactName": "NightlyUpdate",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ContinuousConfigure::@3616494f9d84e65b3f7f": {
+      "artifactName": "ContinuousConfigure",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ExperimentalSubmit::@3616494f9d84e65b3f7f": {
+      "artifactName": "ExperimentalSubmit",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "NightlyBuild::@3616494f9d84e65b3f7f": {
+      "artifactName": "NightlyBuild",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "docs::@3616494f9d84e65b3f7f": {
+      "artifactName": "docs",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ExperimentalMemCheck::@3616494f9d84e65b3f7f": {
+      "artifactName": "ExperimentalMemCheck",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ExperimentalUpdate::@3616494f9d84e65b3f7f": {
+      "artifactName": "ExperimentalUpdate",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "NightlySubmit::@3616494f9d84e65b3f7f": {
+      "artifactName": "NightlySubmit",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "uninstall::@3616494f9d84e65b3f7f": {
+      "artifactName": "uninstall",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "Nightly::@3616494f9d84e65b3f7f": {
+      "artifactName": "Nightly",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "NightlyStart::@3616494f9d84e65b3f7f": {
+      "artifactName": "NightlyStart",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "tag::@05629c48e5653c2f7bf0": {
+      "artifactName": "tag",
+      "abi": "arm64-v8a",
+      "output": "/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/taglib/taglib/libtag.a",
+      "runtimeFiles": []
+    },
+    "ContinuousStart::@3616494f9d84e65b3f7f": {
+      "artifactName": "ContinuousStart",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "taglib_jni::@6890427a1f51a3e7e1df": {
+      "artifactName": "taglib_jni",
+      "abi": "arm64-v8a",
+      "output": "/workspaces/AndroidTagLib/library/build/intermediates/cxx/RelWithDebInfo/4pp3a3v5/obj/arm64-v8a/libtaglib_jni.so",
+      "runtimeFiles": []
+    },
+    "ContinuousUpdate::@3616494f9d84e65b3f7f": {
+      "artifactName": "ContinuousUpdate",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ExperimentalStart::@3616494f9d84e65b3f7f": {
+      "artifactName": "ExperimentalStart",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ContinuousMemCheck::@3616494f9d84e65b3f7f": {
+      "artifactName": "ContinuousMemCheck",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "NightlyMemCheck::@3616494f9d84e65b3f7f": {
+      "artifactName": "NightlyMemCheck",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "Continuous::@3616494f9d84e65b3f7f": {
+      "artifactName": "Continuous",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ContinuousBuild::@3616494f9d84e65b3f7f": {
+      "artifactName": "ContinuousBuild",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "NightlyMemoryCheck::@3616494f9d84e65b3f7f": {
+      "artifactName": "NightlyMemoryCheck",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ogg::@9eaf6ae66da5c813ae51": {
+      "artifactName": "ogg",
+      "abi": "arm64-v8a",
+      "output": "/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/jni/libogg-1.3.5/libogg.a",
+      "runtimeFiles": []
+    },
+    "opus::@922c6de6b8c01038a208": {
+      "artifactName": "opus",
+      "abi": "arm64-v8a",
+      "output": "/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/jni/opus-1.3.1/libopus.a",
+      "runtimeFiles": []
+    },
+    "ExperimentalBuild::@3616494f9d84e65b3f7f": {
+      "artifactName": "ExperimentalBuild",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "test_opus_padding::@922c6de6b8c01038a208": {
+      "artifactName": "test_opus_padding",
+      "abi": "arm64-v8a",
+      "output": "/workspaces/AndroidTagLib/library/build/intermediates/cxx/RelWithDebInfo/4pp3a3v5/obj/arm64-v8a/test_opus_padding",
+      "runtimeFiles": []
+    },
+    "vorbisenc::@e56064d81dc67d40fb15": {
+      "artifactName": "vorbisenc",
+      "abi": "arm64-v8a",
+      "output": "/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/jni/libvorbis-1.3.7/lib/libvorbisenc.a",
+      "runtimeFiles": []
+    }
+  }
+}

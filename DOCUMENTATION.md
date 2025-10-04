@@ -28,17 +28,33 @@ AndroidTagLib/
 ```
 
 ## Building the AAR
-1. Ensure you have OpenJDK 17, Android SDK, NDK, and CMake installed.
-2. Set `JAVA_HOME` to OpenJDK 17:
-   ```bash
-   export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-   ```
-3. Run the Gradle build:
-   ```bash
-   ./gradlew :library:assembleRelease
-   ```
-4. The AAR will be generated at:
-   `library/build/outputs/aar/library-release.aar`
+1. **Install Prerequisites:**
+    - OpenJDK 17
+    - [Android SDK](https://developer.android.com/studio) (not included in this repo)
+    - [Android NDK](https://developer.android.com/ndk) (not included in this repo)
+    - [CMake](https://cmake.org/)
+
+2. **Set Up SDK/NDK:**
+    - Download and install the Android SDK and NDK separately.
+    - Set the SDK path in `local.properties`:
+      ```
+      sdk.dir=/path/to/your/android-sdk
+      ndk.dir=/path/to/your/android-ndk
+      ```
+    - Do **not** clone or expect SDK/NDK files in this repository. They must be installed on your system.
+
+3. **Set JAVA_HOME:**
+    ```bash
+    export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+    ```
+
+4. **Build the AAR:**
+    ```bash
+    ./gradlew :library:assembleRelease
+    ```
+
+5. The AAR will be generated at:
+    `library/build/outputs/aar/library-release.aar`
 
 ## Using the AAR in Your App
 - Add the AAR to your app's `libs/` directory.
