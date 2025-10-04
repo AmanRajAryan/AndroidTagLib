@@ -1,15 +1,2 @@
-# Gradle
-.gradle/
-build/
-.idea/
-local.properties
-
-# Android
-*.iml
-.cxx/
-.externalNativeBuild/
-captures/
-
-# OS
-.DS_Store
-Thumbs.db
+android-sdk/
+cmdline-tools.zip
