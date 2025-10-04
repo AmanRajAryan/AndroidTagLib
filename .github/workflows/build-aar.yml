@@ -24,7 +24,4 @@
   uses: actions/upload-artifact@v4
   with:
     name: library-release.aar
-    path: library/build/outputs/aar/library-release.aar        
-    with:
-          name: library-release.aar
-          path: library/build/outputs/aar/library-release.aar
+    path: library/build/outputs/aar/library-release.aar
