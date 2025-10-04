@@ -27,7 +27,7 @@ android {
     }
 
     externalNativeBuild {
-        cmake { path file("${projectDir}/CMakeLists.txt") }
+        cmake { path "CMakeLists.txt" }
     }
 
     compileOptions {
