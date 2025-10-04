@@ -1,86 +1,0 @@
-C/C++ Structured Logi
-g
-e/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/additional_project_files.txtC
-A
-?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	ú·ûðš3ïÅ û¼¬Úš3f
-d
-b/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/android_gradle_build.json	ú·ûðš3Š] Œ½¬Úš3k
-i
-g/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/android_gradle_build_mini.json	ú·ûðš3±V ”À¬Úš3X
-V
-T/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/build.ninja	ú·ûðš3±¬$ î»¬Úš3\
-Z
-X/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/build.ninja.txt	ú·ûðš3a
-_
-]/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/build_file_index.txt	ú·ûðš3Ï ‘Ì£×š3b
-`
-^/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/compile_commands.json	ú·ûðš3Ð¦ í»¬Úš3f
-d
-b/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/compile_commands.json.bin	ú·ûðš3	ì í»¬Úš3l
-j
-h/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/metadata_generation_command.txt	ú·ûðš3
-Š ‘Ì£×š3_
-]
-[/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/prefab_config.json	ú·ûðš3( ‘Ì£×š3d
-b
-`/workspaces/AndroidTagLib/library/.cxx/RelWithDebInfo/4pp3a3v5/arm64-v8a/symbol_folder_index.txt	ú·ûðš3_ ‘Ì£×š34
-2
-0/workspaces/AndroidTagLib/library/CMakeLists.txt	ú·ûðš3 œˆÀ×š3E
-C
-A/workspaces/AndroidTagLib/library/jni/libogg-1.3.5/CMakeLists.txt	ú·ûðš31 °íöº•/M
-K
-I/workspaces/AndroidTagLib/library/jni/libogg-1.3.5/cmake/CheckSizes.cmake	ú·ûðš3‡  Ä¬…ž.O
-M
-K/workspaces/AndroidTagLib/library/jni/libogg-1.3.5/cmake/OggConfig.cmake.in	ú·ûðš3á  Ä¬…ž.H
-F
-D/workspaces/AndroidTagLib/library/jni/libvorbis-1.3.7/CMakeLists.txt	ú·ûðš3 ‹ˆÀ×š3U
-S
-Q/workspaces/AndroidTagLib/library/jni/libvorbis-1.3.7/cmake/VorbisConfig.cmake.in	ú·ûðš3Œ òÂô—.L
-J
-H/workspaces/AndroidTagLib/library/jni/libvorbis-1.3.7/lib/CMakeLists.txt	ú·ûðš3ä#  Í’õ—.C
-A
-?/workspaces/AndroidTagLib/library/jni/opus-1.3.1/CMakeLists.txt	ú·ûðš3åw ŒˆÀ×š3H
-F
-D/workspaces/AndroidTagLib/library/jni/opus-1.3.1/OpusConfig.cmake.in	ú·ûðš3˜ ¸ü˜Í -F
-D
-B/workspaces/AndroidTagLib/library/jni/opus-1.3.1/config.h.cmake.in	ú·ûðš30 ¸ü˜Í -F
-D
-B/workspaces/AndroidTagLib/library/jni/opus-1.3.1/opus_config.cmake	ú·ûðš3©	 è¶§Î -I
-G
-E/workspaces/AndroidTagLib/library/jni/opus-1.3.1/opus_functions.cmake	ú·ûðš3Ç> ¸ü˜Í -G
-E
-C/workspaces/AndroidTagLib/library/jni/opus-1.3.1/opus_sources.cmake	û·ûðš3œ è¶§Î -F
-D
-B/workspaces/AndroidTagLib/library/jni/opusfile-0.12/CMakeLists.txt	û·ûðš3æ ‹ˆÀ×š3K
-I
-G/workspaces/AndroidTagLib/library/taglib/3rdparty/utfcpp/CMakeLists.txt	û·ûðš3¬ ‹Ñ¼Ñš3;
-9
-7/workspaces/AndroidTagLib/library/taglib/CMakeLists.txt	û·ûðš3ŠB ÐÇ¼Ñš3B
-@
->/workspaces/AndroidTagLib/library/taglib/ConfigureChecks.cmake	û·ûðš3› ÐÇ¼Ñš3;
-9
-7/workspaces/AndroidTagLib/library/taglib/Doxyfile.cmake	û·ûðš3ù] ÐÇ¼Ñš3D
-B
-@/workspaces/AndroidTagLib/library/taglib/bindings/CMakeLists.txt	û·ûðš3 ÑÇ¼Ñš3F
-D
-B/workspaces/AndroidTagLib/library/taglib/bindings/c/CMakeLists.txt	û·ûðš3 ‡) ÑÇ¼Ñš3I
-G
-E/workspaces/AndroidTagLib/library/taglib/bindings/c/taglib_c.pc.cmake	û·ûðš3!Ö ÒÇ¼Ñš3L
-J
-H/workspaces/AndroidTagLib/library/taglib/cmake/modules/FindCppUnit.cmake	û·ûðš3"” ÒÇ¼Ñš3S
-Q
-O/workspaces/AndroidTagLib/library/taglib/cmake/modules/MacroEnsureVersion.cmake	û·ûðš3#® ÒÇ¼Ñš3E
-C
-A/workspaces/AndroidTagLib/library/taglib/cmake_uninstall.cmake.in	û·ûðš3$— ÒÇ¼Ñš3;
-9
-7/workspaces/AndroidTagLib/library/taglib/config.h.cmake	þ·ûðš3%¶ ÒÇ¼Ñš3@
->
-</workspaces/AndroidTagLib/library/taglib/taglib-config.cmake	þ·ûðš3&œ ÓÇ¼Ñš3C
-A
-?/workspaces/AndroidTagLib/library/taglib/taglib-config.cmake.in	þ·ûðš3' ÓÇ¼Ñš3<
-:
-8/workspaces/AndroidTagLib/library/taglib/taglib.pc.cmake	þ·ûðš3(Ü ÓÇ¼Ñš3B
-@
->/workspaces/AndroidTagLib/library/taglib/taglib/CMakeLists.txt	þ·ûðš3)‡^ ÔÇ¼Ñš3I
-G
-E/workspaces/AndroidTagLib/library/taglib/taglib/taglib_config.h.cmake	þ·ûðš3*² ðÇ¼Ñš3
