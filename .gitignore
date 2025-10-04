@@ -1,2 +1,4 @@
+library/build/
+!library/build/outputs/
 android-sdk/
 cmdline-tools.zip
