@@ -21,7 +21,7 @@ jobs:
         run: git submodule update --init --recursive
 
       - name: print CMakeLists
-        run: pwd
+        run: pwd && ls
 
       - name: install utfcpp
         run: sudo apt-get install -y  libutfcpp-dev
