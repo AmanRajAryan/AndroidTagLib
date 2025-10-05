@@ -462,40 +462,11 @@ Java_aman_taglib_TagLib_getArtworkDebugInfo(JNIEnv *env, jobject /*thiz*/, jstri
                 debugInfo += "  - " + it->first.to8Bit(true) + "\n";
             }
             
-            if (tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
-                TagLib::StringList pictureDataList = tag->fieldListMap()["METADATA_BLOCK_PICTURE"];
-                debugInfo += "METADATA_BLOCK_PICTURE: FOUND\n";
-                debugInfo += "Picture count: " + std::to_string(pictureDataList.size()) + "\n";
-                
-                if (!pictureDataList.isEmpty()) {
-                    TagLib::ByteVector encodedData = pictureDataList.front().data(TagLib::String::Latin1);
-                    debugInfo += "Encoded size: " + std::to_string(encodedData.size()) + " bytes\n";
-                    
-                    TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
-                    debugInfo += "Decoded size: " + std::to_string(decodedData.size()) + " bytes\n";
-                    
-                    TagLib::FLAC::Picture pic;
-                    pic.parse(decodedData);
-                    debugInfo += "Picture data size: " + std::to_string(pic.data().size()) + " bytes\n";
-                    debugInfo += "MIME type: " + pic.mimeType().to8Bit(true) + "\n";
-                }
-            } else {
-                debugInfo += "METADATA_BLOCK_PICTURE: NOT FOUND\n";
-            }
-        } else {
-            debugInfo += "Opus tag found: NO\n";
-        }
-    }
-
-    if (oggFile) {
-        TagLib::Ogg::XiphComment *tag = oggFile->tag();
-        if (tag) {
-            debugInfo += "Vorbis tag found: YES\n";
-            debugInfo += "Available fields:\n";
-            
-            TagLib::PropertyMap props = tag->properties();
-            for (auto it = props.begin(); it != props.end(); ++it) {
-                debugInfo += "  - " + it->first.to8Bit(true) + "\n";
+            // Check fieldListMap for all keys
+            debugInfo += "All tag fields:\n";
+            const TagLib::Ogg::FieldListMap &fieldMap = tag->fieldListMap();
+            for (auto it = fieldMap.begin(); it != fieldMap.end(); ++it) {
+                debugInfo += "  - " + it->first.upper() + "\n";
             }
             
             if (tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
@@ -521,6 +492,30 @@ Java_aman_taglib_TagLib_getArtworkDebugInfo(JNIEnv *env, jobject /*thiz*/, jstri
             
             if (tag->fieldListMap().contains("COVERARTMIME")) {
                 debugInfo += "COVERARTMIME: " + tag->fieldListMap()["COVERARTMIME"].front().to8Bit(true) + "\n";
+            }
+            
+            debugInfo += "\nNote: Your Opus file may have external artwork or embedded in stream.\n";
+            debugInfo += "TagLib may not support all Opus artwork methods.\n";
+        } else {
+            debugInfo += "Opus tag found: NO\n";
+        }
+    }
+
+    if (oggFile) {
+        TagLib::Ogg::XiphComment *tag = oggFile->tag();
+        if (tag) {
+            debugInfo += "Vorbis tag found: YES\n";
+            debugInfo += "Available fields:\n";
+            
+            TagLib::PropertyMap props = tag->properties();
+            for (auto it = props.begin(); it != props.end(); ++it) {
+                debugInfo += "  - " + it->first.to8Bit(true) + "\n";
+            }
+            
+            if (tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
+                debugInfo += "METADATA_BLOCK_PICTURE: FOUND\n";
+            } else {
+                debugInfo += "METADATA_BLOCK_PICTURE: NOT FOUND\n";
             }
         }
     }
