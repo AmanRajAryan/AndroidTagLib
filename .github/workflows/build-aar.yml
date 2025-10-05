@@ -19,40 +19,15 @@ jobs:
       - name: print CMakeLists initial
         run: cat library/jni/opusfile-0.12/CMakeLists.txt
 
-      - name: Force clean submodules
-        run: |
-          rm -rf library/jni/opusfile-0.12
-          git submodule update --init --recursive --force --checkout
-          git submodule foreach --recursive git reset --hard
-          git submodule foreach --recursive git clean -fdx
-          find library/jni/opusfile-0.12 -name '*.cmake' -exec sed -i 's/\r$//' {} +
-
-      - name: Clean Opusfile submodule
-        run: |
-          rm -rf library/jni/opusfile-0.12
-          git submodule update --init --recursive --force --checkout
-
-      - name: Install dos2unix
-        run: sudo apt-get update && sudo apt-get install -y dos2unix
-
 
       - name: Update git submodules
         run: git submodule update --init --recursive
 
-      - name: Clean and update submodules
-        run: |
-          git submodule deinit -f --all
-          git submodule update --init --recursive --force --checkout
-          git submodule foreach --recursive git reset --hard
-          git submodule foreach --recursive git clean -fdx
-          find . -name '*.cmake' -exec dos2unix {} +
-
+      
       - name: print CMakeLists final
         run: cat library/jni/opusfile-0.12/CMakeLists.txt
 
-      - name: install utfcpp
-        run: sudo apt-get install -y  libutfcpp-dev
-
+    
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
