@@ -16,6 +16,11 @@ jobs:
           submodules: true
           fetch-depth: 0
 
+      - name: Clean Opusfile submodule
+        run: |
+          rm -rf library/jni/opusfile-0.12
+          git submodule update --init --recursive --force --checkout
+
       - name: Install dos2unix
         run: sudo apt-get update && sudo apt-get install -y dos2unix
 
