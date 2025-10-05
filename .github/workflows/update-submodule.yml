@@ -1,12 +1,12 @@
-name: Update Submodule
+name: Update Opusfile Submodule
 
 on:
   workflow_dispatch:      # manual trigger
   schedule:
-    - cron: '0 0 * * 0'  # optional: run weekly
+    - cron: '0 0 * * 0'  # optional: run weekly (Sunday 00:00 UTC)
 
 permissions:
-  contents: write    # <---- this gives push permission!
+  contents: write    # allows the workflow to push changes
 
 jobs:
   update-submodule:
@@ -17,29 +17,25 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}  # ensure token available
+          fetch-depth: 0           # full history needed for push
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Git identity
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Update opusfile submodule
+      - name: Update opusfile submodule to latest commit
         run: |
           cd library/jni/opusfile-0.12
           git fetch origin
-          git checkout main
+          git checkout main     # or master, depending on your fork branch
           git pull
           cd ../../..
+
           git add library/jni/opusfile-0.12
 
           if ! git diff-index --quiet HEAD; then
-            git commit -m "Update opusfile-0.12 submodule to latest commit"
-            git push origin HEAD
-          else
-            echo "Submodule already up-to-date"
-          fi          if ! git diff-index --quiet HEAD; then
             git commit -m "Update opusfile-0.12 submodule to latest commit"
             git push origin HEAD
           else
