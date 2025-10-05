@@ -155,4 +155,264 @@ Java_aman_taglib_TagLib_setMetadata(JNIEnv *env, jobject /*thiz*/, jstring jFile
     return ok ? JNI_TRUE : JNI_FALSE;
 }
 
+
+JNIEXPORT jbyteArray JNICALL
+Java_aman_taglib_TagLib_getArtwork(JNIEnv *env, jobject /*thiz*/, jstring jFilePath) {
+    const char *path = env->GetStringUTFChars(jFilePath, nullptr);
+    TagLib::FileRef f(path);
+    env->ReleaseStringUTFChars(jFilePath, path);
+
+    if (f.isNull() || !f.file()) return nullptr;
+
+    // ==== 1️⃣ MP3 (ID3v2 APIC) ====
+    if (auto mp3 = dynamic_cast<TagLib::MPEG::File *>(f.file())) {
+        if (auto id3 = mp3->ID3v2Tag()) {
+            auto frames = id3->frameListMap()["APIC"];
+            if (!frames.isEmpty()) {
+                auto *frame = static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frames.front());
+                TagLib::ByteVector data = frame->picture();
+                jbyteArray arr = env->NewByteArray(data.size());
+                env->SetByteArrayRegion(arr, 0, data.size(), (const jbyte *)data.data());
+                return arr;
+            }
+        }
+    }
+
+    // ==== 2️⃣ FLAC ====
+    if (auto flac = dynamic_cast<TagLib::FLAC::File *>(f.file())) {
+        auto pics = flac->pictureList();
+        if (!pics.isEmpty()) {
+            TagLib::ByteVector data = pics.front()->data();
+            jbyteArray arr = env->NewByteArray(data.size());
+            env->SetByteArrayRegion(arr, 0, data.size(), (const jbyte *)data.data());
+            return arr;
+        }
+    }
+
+    // ==== 3️⃣ Opus / Vorbis ====
+    if (auto opus = dynamic_cast<TagLib::Ogg::Opus::File *>(f.file())) {
+        auto tag = opus->tag();
+        if (tag) {
+            auto pics = tag->pictureList();
+            if (!pics.isEmpty()) {
+                TagLib::ByteVector data = pics.front()->data();
+                jbyteArray arr = env->NewByteArray(data.size());
+                env->SetByteArrayRegion(arr, 0, data.size(), (const jbyte *)data.data());
+                return arr;
+            }
+        }
+    }
+
+    if (auto vorbis = dynamic_cast<TagLib::Ogg::Vorbis::File *>(f.file())) {
+        auto tag = vorbis->tag();
+        if (tag) {
+            auto pics = tag->pictureList();
+            if (!pics.isEmpty()) {
+                TagLib::ByteVector data = pics.front()->data();
+                jbyteArray arr = env->NewByteArray(data.size());
+                env->SetByteArrayRegion(arr, 0, data.size(), (const jbyte *)data.data());
+                return arr;
+            }
+        }
+    }
+
+    return nullptr; // no artwork found
+}
+
+
+JNIEXPORT jboolean JNICALL
+Java_aman_taglib_TagLib_setArtwork(JNIEnv *env, jobject /*thiz*/, jstring jFilePath, jbyteArray jImageData, jstring jMimeType) {
+    const char *path = env->GetStringUTFChars(jFilePath, nullptr);
+    const char *mimeType = env->GetStringUTFChars(jMimeType, nullptr);
+    jsize length = env->GetArrayLength(jImageData);
+
+    std::vector<char> buffer(length);
+    env->GetByteArrayRegion(jImageData, 0, length, reinterpret_cast<jbyte *>(buffer.data()));
+
+    bool success = false;
+
+    // ==== 1️⃣ MP3 ====
+    if (TagLib::MPEG::File mp3(path)) {
+        auto id3 = mp3.ID3v2Tag(true);
+        if (id3) {
+            id3->removeFrames("APIC"); // remove old
+            auto *frame = new TagLib::ID3v2::AttachedPictureFrame();
+            frame->setMimeType(mimeType);
+            frame->setPicture(TagLib::ByteVector(buffer.data(), buffer.size()));
+            frame->setType(TagLib::ID3v2::AttachedPictureFrame::FrontCover);
+            id3->addFrame(frame);
+            success = mp3.save();
+        }
+    }
+
+    // ==== 2️⃣ FLAC ====
+    if (!success) {
+        TagLib::FLAC::File flac(path);
+        if (flac.isValid()) {
+            flac.removePictures();
+            TagLib::FLAC::Picture *pic = new TagLib::FLAC::Picture();
+            pic->setMimeType(mimeType);
+            pic->setType(TagLib::FLAC::Picture::FrontCover);
+            pic->setData(TagLib::ByteVector(buffer.data(), buffer.size()));
+            flac.addPicture(pic);
+            success = flac.save();
+        }
+    }
+
+    // ==== 3️⃣ Opus ====
+    if (!success) {
+        TagLib::Ogg::Opus::File opus(path);
+        if (opus.isOpen() && opus.tag()) {
+            TagLib::FLAC::Picture *pic = new TagLib::FLAC::Picture();
+            pic->setMimeType(mimeType);
+            pic->setType(TagLib::FLAC::Picture::FrontCover);
+            pic->setData(TagLib::ByteVector(buffer.data(), buffer.size()));
+            opus.tag()->addPicture(pic);
+            success = opus.save();
+        }
+    }
+
+    // ==== 4️⃣ Ogg Vorbis ====
+    if (!success) {
+        TagLib::Ogg::Vorbis::File vorbis(path);
+        if (vorbis.isOpen() && vorbis.tag()) {
+            TagLib::FLAC::Picture *pic = new TagLib::FLAC::Picture();
+            pic->setMimeType(mimeType);
+            pic->setType(TagLib::FLAC::Picture::FrontCover);
+            pic->setData(TagLib::ByteVector(buffer.data(), buffer.size()));
+            vorbis.tag()->addPicture(pic);
+            success = vorbis.save();
+        }
+    }
+
+    env->ReleaseStringUTFChars(jFilePath, path);
+    env->ReleaseStringUTFChars(jMimeType, mimeType);
+
+    return success ? JNI_TRUE : JNI_FALSE;
+}
+
+
+
+}
+        env->CallObjectMethod(mapObj, putMethod, env->NewStringUTF("comment"), env->NewStringUTF(tag->comment().to8Bit(true).c_str()));
+
+        // MP3 (ID3v2)
+        TagLib::MPEG::File* mp3File = dynamic_cast<TagLib::MPEG::File*>(f.file());
+        if (mp3File && mp3File->ID3v2Tag()) {
+            TagLib::ID3v2::Tag* id3v2 = mp3File->ID3v2Tag();
+            TagLib::ID3v2::FrameList frames = id3v2->frameList();
+            for (auto it = frames.begin(); it != frames.end(); ++it) {
+                TagLib::ByteVector frameIdBV = (*it)->frameID();
+                std::string frameId(frameIdBV.data(), frameIdBV.size());
+                std::string frameText = (*it)->toString().to8Bit(true);
+                env->CallObjectMethod(mapObj, putMethod, env->NewStringUTF(frameId.c_str()), env->NewStringUTF(frameText.c_str()));
+            }
+        }
+        // FLAC, OGG, OPUS, etc. (property map)
+        TagLib::FLAC::File* flacFile = dynamic_cast<TagLib::FLAC::File*>(f.file());
+        if (flacFile) {
+            TagLib::PropertyMap props = flacFile->properties();
+            for (auto it = props.begin(); it != props.end(); ++it) {
+                std::string key = it->first.to8Bit(true);
+                std::string value = it->second.toString().to8Bit(true);
+                env->CallObjectMethod(mapObj, putMethod, env->NewStringUTF(key.c_str()), env->NewStringUTF(value.c_str()));
+            }
+        }
+        TagLib::Ogg::Vorbis::File* oggFile = dynamic_cast<TagLib::Ogg::Vorbis::File*>(f.file());
+        if (oggFile) {
+            TagLib::PropertyMap props = oggFile->properties();
+            for (auto it = props.begin(); it != props.end(); ++it) {
+                std::string key = it->first.to8Bit(true);
+                std::string value = it->second.toString().to8Bit(true);
+                env->CallObjectMethod(mapObj, putMethod, env->NewStringUTF(key.c_str()), env->NewStringUTF(value.c_str()));
+            }
+        }
+        TagLib::Ogg::Opus::File* opusFile = dynamic_cast<TagLib::Ogg::Opus::File*>(f.file());
+        if (opusFile) {
+            TagLib::PropertyMap props = opusFile->properties();
+            for (auto it = props.begin(); it != props.end(); ++it) {
+                std::string key = it->first.to8Bit(true);
+                std::string value = it->second.toString().to8Bit(true);
+                env->CallObjectMethod(mapObj, putMethod, env->NewStringUTF(key.c_str()), env->NewStringUTF(value.c_str()));
+            }
+        }
+        // Add more formats as needed (MPC, APE, ASF, etc.)
+    }
+    return mapObj;
+}
+
+
+
+extern "C" JNIEXPORT jboolean JNICALL
+Java_aman_taglib_TagLib_setMetadata(JNIEnv *env, jobject /*thiz*/, jstring jFilePath, jobject jMetadataMap) {
+    const char *filePath = env->GetStringUTFChars(jFilePath, nullptr);
+    if (!filePath) return JNI_FALSE;
+
+    // Convert Java HashMap<String, String> to std::map
+    std::map<std::string, std::string> metadata;
+    jclass mapClass = env->GetObjectClass(jMetadataMap);
+    jmethodID entrySet = env->GetMethodID(mapClass, "entrySet", "()Ljava/util/Set;");
+    jobject setObj = env->CallObjectMethod(jMetadataMap, entrySet);
+    jclass setClass = env->GetObjectClass(setObj);
+    jmethodID iterator = env->GetMethodID(setClass, "iterator", "()Ljava/util/Iterator;");
+    jobject iterObj = env->CallObjectMethod(setObj, iterator);
+    jclass iterClass = env->GetObjectClass(iterObj);
+    jmethodID hasNext = env->GetMethodID(iterClass, "hasNext", "()Z");
+    jmethodID next = env->GetMethodID(iterClass, "next", "()Ljava/lang/Object;");
+    jclass entryClass = nullptr;
+    jmethodID getKey = nullptr, getValue = nullptr;
+
+    while (env->CallBooleanMethod(iterObj, hasNext)) {
+        jobject entryObj = env->CallObjectMethod(iterObj, next);
+        if (!entryClass) {
+            entryClass = env->GetObjectClass(entryObj);
+            getKey = env->GetMethodID(entryClass, "getKey", "()Ljava/lang/Object;");
+            getValue = env->GetMethodID(entryClass, "getValue", "()Ljava/lang/Object;");
+        }
+        jstring keyStr = (jstring)env->CallObjectMethod(entryObj, getKey);
+        jstring valStr = (jstring)env->CallObjectMethod(entryObj, getValue);
+        const char *key = env->GetStringUTFChars(keyStr, nullptr);
+        const char *val = env->GetStringUTFChars(valStr, nullptr);
+        metadata[key] = val;
+        env->ReleaseStringUTFChars(keyStr, key);
+        env->ReleaseStringUTFChars(valStr, val);
+        env->DeleteLocalRef(entryObj);
+    }
+
+    TagLib::FileRef f(filePath);
+    if (f.isNull() || !f.file()) {
+        env->ReleaseStringUTFChars(jFilePath, filePath);
+        return JNI_FALSE;
+    }
+
+    TagLib::Tag *tag = f.tag();
+    if (!tag) {
+        env->ReleaseStringUTFChars(jFilePath, filePath);
+        return JNI_FALSE;
+    }
+
+    // Only update fields provided by user, leave others untouched
+    if (metadata.count("TITLE")) tag->setTitle(TagLib::String(metadata["TITLE"], TagLib::String::UTF8));
+    if (metadata.count("ARTIST")) tag->setArtist(TagLib::String(metadata["ARTIST"], TagLib::String::UTF8));
+    if (metadata.count("ALBUM")) tag->setAlbum(TagLib::String(metadata["ALBUM"], TagLib::String::UTF8));
+    if (metadata.count("GENRE")) tag->setGenre(TagLib::String(metadata["GENRE"], TagLib::String::UTF8));
+    if (metadata.count("COMMENT")) tag->setComment(TagLib::String(metadata["COMMENT"], TagLib::String::UTF8));
+    if (metadata.count("YEAR")) tag->setYear(atoi(metadata["YEAR"].c_str()));
+    if (metadata.count("TRACK")) tag->setTrack(atoi(metadata["TRACK"].c_str()));
+
+    // For custom fields, only replace/add those provided by user
+    TagLib::PropertyMap props = f.file()->properties();
+    for (const auto &kv : metadata) {
+        if (kv.first == "TITLE" || kv.first == "ARTIST" || kv.first == "ALBUM" ||
+            kv.first == "GENRE" || kv.first == "COMMENT" || kv.first == "YEAR" || kv.first == "TRACK")
+            continue;
+        props.replace(kv.first, TagLib::StringList(TagLib::String(kv.second, TagLib::String::UTF8)));
+    }
+    f.file()->setProperties(props);
+
+    bool ok = f.file()->save();
+    env->ReleaseStringUTFChars(jFilePath, filePath);
+    return ok ? JNI_TRUE : JNI_FALSE;
+}
+
 }
