@@ -40,4 +40,17 @@ public class TagLib {
      * @return true if artwork was successfully set, false otherwise
      */
     public native boolean setArtwork(String filePath, byte[] imageData, String mimeType, String description);
+    
+    /**
+     * Debug method to get information about artwork extraction.
+     * @param filePath Path to the audio file
+     * @return Debug information as a string
+     */
+    public native String getArtworkDebugInfo(String filePath);
+}     * @param imageData Raw image data (JPEG, PNG, etc.)
+     * @param mimeType MIME type of the image (e.g., "image/jpeg", "image/png")
+     * @param description Optional description of the image (can be empty string)
+     * @return true if artwork was successfully set, false otherwise
+     */
+    public native boolean setArtwork(String filePath, byte[] imageData, String mimeType, String description);
 }
