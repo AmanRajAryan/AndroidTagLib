@@ -16,6 +16,9 @@ jobs:
           submodules: true
           fetch-depth: 0
 
+      - name: print CMakeLists initial
+        run: cat library/jni/opusfile-0.12/CMakeLists.txt
+
       - name: Force clean submodules
         run: |
           rm -rf library/jni/opusfile-0.12
@@ -44,7 +47,7 @@ jobs:
           git submodule foreach --recursive git clean -fdx
           find . -name '*.cmake' -exec dos2unix {} +
 
-      - name: print CMakeLists
+      - name: print CMakeLists final
         run: cat library/jni/opusfile-0.12/CMakeLists.txt
 
       - name: install utfcpp
