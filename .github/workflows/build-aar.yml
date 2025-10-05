@@ -34,6 +34,10 @@ jobs:
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
 
+      - name: install utfcpp
+        run: sudo apt-get install utfcpp utf8cpp libutfcpp-dev
+
+
       - name: git submodules
         run: git submodule update --init
 
