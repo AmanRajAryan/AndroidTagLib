@@ -28,33 +28,41 @@ AndroidTagLib/
 ```
 
 ## Building the AAR
-1. **Install Prerequisites:**
-    - OpenJDK 17
-    - [Android SDK](https://developer.android.com/studio) (not included in this repo)
-    - [Android NDK](https://developer.android.com/ndk) (not included in this repo)
-    - [CMake](https://cmake.org/)
-
-2. **Set Up SDK/NDK:**
-    - Download and install the Android SDK and NDK separately.
-    - Set the SDK path in `local.properties`:
-      ```
-      sdk.dir=/path/to/your/android-sdk
-      ndk.dir=/path/to/your/android-ndk
-      ```
-    - Do **not** clone or expect SDK/NDK files in this repository. They must be installed on your system.
-
-3. **Set JAVA_HOME:**
+### Prerequisites and Build Steps (Automated)
+1. **Install OpenJDK 17:**
     ```bash
+    sudo apt-get update && sudo apt-get install -y openjdk-17-jdk
     export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
     ```
-
-4. **Build the AAR:**
+2. **Install Android SDK & NDK:**
+    ```bash
+    wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O /tmp/cmdline-tools.zip
+    mkdir -p /opt/android-sdk/cmdline-tools
+    unzip /tmp/cmdline-tools.zip -d /opt/android-sdk/cmdline-tools
+    mv /opt/android-sdk/cmdline-tools/cmdline-tools /opt/android-sdk/cmdline-tools/latest
+    export ANDROID_SDK_ROOT=/opt/android-sdk
+    /opt/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platform-tools" "platforms;android-33" "build-tools;33.0.2" "ndk;25.2.9519653"
+    ```
+3. **Configure local.properties:**
+    Set these paths in `/workspaces/AndroidTagLib/local.properties`:
+    ```
+    sdk.dir=/opt/android-sdk
+    ndk.dir=/opt/android-sdk/ndk/25.2.9519653
+    ```
+4. **Initialize submodules:**
+    ```bash
+    git submodule update --init --recursive
+    ```
+5. **Build the AAR:**
     ```bash
     ./gradlew :library:assembleRelease
     ```
-
-5. The AAR will be generated at:
+6. The AAR will be generated at:
     `library/build/outputs/aar/library-release.aar`
+
+**Notes:**
+- HTTP/SSL and documentation dependencies are disabled for cross-platform builds.
+- All native dependencies are managed via git submodules.
 
 ## Using the AAR in Your App
 - Add the AAR to your app's `libs/` directory.
