@@ -245,27 +245,57 @@ Java_aman_taglib_TagLib_getArtwork(JNIEnv *env, jobject /*thiz*/, jstring jFileP
     TagLib::Ogg::Opus::File *opusFile = dynamic_cast<TagLib::Ogg::Opus::File*>(f.file());
     if (opusFile) {
         TagLib::Ogg::XiphComment *tag = opusFile->tag();
-        if (tag && tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
-            TagLib::StringList pictureDataList = tag->fieldListMap()["METADATA_BLOCK_PICTURE"];
-            for (auto it = pictureDataList.begin(); it != pictureDataList.end(); ++it) {
-                // Decode base64 first
-                TagLib::ByteVector encodedData = it->data(TagLib::String::Latin1);
-                TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
-                
-                TagLib::FLAC::Picture pic;
-                pic.parse(decodedData);
-                
-                TagLib::ByteVector picData = pic.data();
-                if (picData.size() > 0) {
-                    jbyteArray imageData = env->NewByteArray(picData.size());
-                    env->SetByteArrayRegion(imageData, 0, picData.size(), 
-                        reinterpret_cast<const jbyte*>(picData.data()));
+        if (tag) {
+            // Check for METADATA_BLOCK_PICTURE
+            if (tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
+                TagLib::StringList pictureDataList = tag->fieldListMap()["METADATA_BLOCK_PICTURE"];
+                for (auto it = pictureDataList.begin(); it != pictureDataList.end(); ++it) {
+                    // Decode base64 first
+                    TagLib::ByteVector encodedData = it->data(TagLib::String::Latin1);
+                    TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
                     
-                    jstring mimeType = env->NewStringUTF(pic.mimeType().toCString(true));
-                    jstring description = env->NewStringUTF(pic.description().toCString(true));
+                    TagLib::FLAC::Picture pic;
+                    pic.parse(decodedData);
                     
-                    jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
-                    artworks.push_back(artwork);
+                    TagLib::ByteVector picData = pic.data();
+                    if (picData.size() > 0) {
+                        jbyteArray imageData = env->NewByteArray(picData.size());
+                        env->SetByteArrayRegion(imageData, 0, picData.size(), 
+                            reinterpret_cast<const jbyte*>(picData.data()));
+                        
+                        jstring mimeType = env->NewStringUTF(pic.mimeType().toCString(true));
+                        jstring description = env->NewStringUTF(pic.description().toCString(true));
+                        
+                        jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
+                        artworks.push_back(artwork);
+                    }
+                }
+            }
+            
+            // Also check for COVERART (alternative field name)
+            if (tag->fieldListMap().contains("COVERART")) {
+                TagLib::StringList coverArtList = tag->fieldListMap()["COVERART"];
+                for (auto it = coverArtList.begin(); it != coverArtList.end(); ++it) {
+                    TagLib::ByteVector encodedData = it->data(TagLib::String::Latin1);
+                    TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
+                    
+                    if (decodedData.size() > 0) {
+                        jbyteArray imageData = env->NewByteArray(decodedData.size());
+                        env->SetByteArrayRegion(imageData, 0, decodedData.size(), 
+                            reinterpret_cast<const jbyte*>(decodedData.data()));
+                        
+                        // Try to get mime type from COVERARTMIME field
+                        std::string mimeTypeStr = "image/jpeg"; // default
+                        if (tag->fieldListMap().contains("COVERARTMIME")) {
+                            mimeTypeStr = tag->fieldListMap()["COVERARTMIME"].front().to8Bit(true);
+                        }
+                        
+                        jstring mimeType = env->NewStringUTF(mimeTypeStr.c_str());
+                        jstring description = env->NewStringUTF("");
+                        
+                        jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
+                        artworks.push_back(artwork);
+                    }
                 }
             }
         }
@@ -472,6 +502,25 @@ Java_aman_taglib_TagLib_getArtworkDebugInfo(JNIEnv *env, jobject /*thiz*/, jstri
                 debugInfo += "METADATA_BLOCK_PICTURE: FOUND\n";
             } else {
                 debugInfo += "METADATA_BLOCK_PICTURE: NOT FOUND\n";
+            }
+            
+            // Check for COVERART alternative
+            if (tag->fieldListMap().contains("COVERART")) {
+                debugInfo += "COVERART: FOUND\n";
+                TagLib::StringList coverArtList = tag->fieldListMap()["COVERART"];
+                debugInfo += "COVERART count: " + std::to_string(coverArtList.size()) + "\n";
+                if (!coverArtList.isEmpty()) {
+                    TagLib::ByteVector encodedData = coverArtList.front().data(TagLib::String::Latin1);
+                    debugInfo += "COVERART encoded size: " + std::to_string(encodedData.size()) + " bytes\n";
+                    TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
+                    debugInfo += "COVERART decoded size: " + std::to_string(decodedData.size()) + " bytes\n";
+                }
+            } else {
+                debugInfo += "COVERART: NOT FOUND\n";
+            }
+            
+            if (tag->fieldListMap().contains("COVERARTMIME")) {
+                debugInfo += "COVERARTMIME: " + tag->fieldListMap()["COVERARTMIME"].front().to8Bit(true) + "\n";
             }
         }
     }
