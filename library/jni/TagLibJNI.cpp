@@ -244,56 +244,30 @@ Java_aman_taglib_TagLib_getArtwork(JNIEnv *env, jobject /*thiz*/, jstring jFileP
     // For Opus, check for all METADATA_BLOCK_PICTURE entries
     TagLib::Ogg::Opus::File *opusFile = dynamic_cast<TagLib::Ogg::Opus::File*>(f.file());
     if (opusFile) {
-        __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Opus file detected");
         TagLib::Ogg::XiphComment *tag = opusFile->tag();
-        if (tag) {
-            __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Opus tag found");
-            
-            // Debug: print all available fields
-            TagLib::PropertyMap props = tag->properties();
-            for (auto it = props.begin(); it != props.end(); ++it) {
-                __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Field: %s", it->first.toCString(true));
-            }
-            
-            if (tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
-                __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "METADATA_BLOCK_PICTURE found");
-                TagLib::StringList pictureDataList = tag->fieldListMap()["METADATA_BLOCK_PICTURE"];
-                __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Picture count: %d", pictureDataList.size());
+        if (tag && tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
+            TagLib::StringList pictureDataList = tag->fieldListMap()["METADATA_BLOCK_PICTURE"];
+            for (auto it = pictureDataList.begin(); it != pictureDataList.end(); ++it) {
+                // Decode base64 first
+                TagLib::ByteVector encodedData = it->data(TagLib::String::Latin1);
+                TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
                 
-                for (auto it = pictureDataList.begin(); it != pictureDataList.end(); ++it) {
-                    // Decode base64 first
-                    TagLib::ByteVector encodedData = it->data(TagLib::String::Latin1);
-                    __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Encoded size: %d", encodedData.size());
+                TagLib::FLAC::Picture pic;
+                pic.parse(decodedData);
+                
+                TagLib::ByteVector picData = pic.data();
+                if (picData.size() > 0) {
+                    jbyteArray imageData = env->NewByteArray(picData.size());
+                    env->SetByteArrayRegion(imageData, 0, picData.size(), 
+                        reinterpret_cast<const jbyte*>(picData.data()));
                     
-                    TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
-                    __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Decoded size: %d", decodedData.size());
+                    jstring mimeType = env->NewStringUTF(pic.mimeType().toCString(true));
+                    jstring description = env->NewStringUTF(pic.description().toCString(true));
                     
-                    TagLib::FLAC::Picture pic;
-                    pic.parse(decodedData);
-                    
-                    TagLib::ByteVector picData = pic.data();
-                    __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Picture data size: %d", picData.size());
-                    
-                    if (picData.size() > 0) {
-                        jbyteArray imageData = env->NewByteArray(picData.size());
-                        env->SetByteArrayRegion(imageData, 0, picData.size(), 
-                            reinterpret_cast<const jbyte*>(picData.data()));
-                        
-                        jstring mimeType = env->NewStringUTF(pic.mimeType().toCString(true));
-                        jstring description = env->NewStringUTF(pic.description().toCString(true));
-                        
-                        jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
-                        artworks.push_back(artwork);
-                        __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Artwork added successfully");
-                    } else {
-                        __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Picture data is empty");
-                    }
+                    jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
+                    artworks.push_back(artwork);
                 }
-            } else {
-                __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "METADATA_BLOCK_PICTURE NOT found");
             }
-        } else {
-            __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "No Opus tag");
         }
     }
 
