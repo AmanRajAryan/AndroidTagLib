@@ -50,6 +50,22 @@ jobs:
           path: |
             app/build/outputs/**/*.apk
             app/build/outputs/**/*.aar
+            app/build/outputs/**/*.aab          sdkmanager --install "ndk;26.1.10909125" "cmake;3.22.1"
+          echo "NDK installed"
+
+      - name: Grant execute permission for Gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew assembleRelease
+
+      - name: Upload build outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-artifacts
+          path: |
+            app/build/outputs/**/*.apk
+            app/build/outputs/**/*.aar
             app/build/outputs/**/*.aab      - name: Build with Gradle
         run: ./gradlew assembleRelease
 
