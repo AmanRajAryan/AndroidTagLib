@@ -16,6 +16,14 @@ jobs:
           submodules: true
           fetch-depth: 0
 
+      - name: Force clean submodules
+        run: |
+          rm -rf library/jni/opusfile-0.12
+          git submodule update --init --recursive --force --checkout
+          git submodule foreach --recursive git reset --hard
+          git submodule foreach --recursive git clean -fdx
+          find library/jni/opusfile-0.12 -name '*.cmake' -exec sed -i 's/\r$//' {} +
+
       - name: Clean Opusfile submodule
         run: |
           rm -rf library/jni/opusfile-0.12
