@@ -218,20 +218,25 @@ Java_aman_taglib_TagLib_getArtwork(JNIEnv *env, jobject /*thiz*/, jstring jFileP
         if (tag && tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
             TagLib::StringList pictureDataList = tag->fieldListMap()["METADATA_BLOCK_PICTURE"];
             for (auto it = pictureDataList.begin(); it != pictureDataList.end(); ++it) {
-                TagLib::ByteVector encodedData = it->data(TagLib::String::UTF8);
+                // Decode base64 first
+                TagLib::ByteVector encodedData = it->data(TagLib::String::Latin1);
+                TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
+                
                 TagLib::FLAC::Picture pic;
-                pic.parse(encodedData);
+                pic.parse(decodedData);
                 
                 TagLib::ByteVector picData = pic.data();
-                jbyteArray imageData = env->NewByteArray(picData.size());
-                env->SetByteArrayRegion(imageData, 0, picData.size(), 
-                    reinterpret_cast<const jbyte*>(picData.data()));
-                
-                jstring mimeType = env->NewStringUTF(pic.mimeType().toCString(true));
-                jstring description = env->NewStringUTF(pic.description().toCString(true));
-                
-                jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
-                artworks.push_back(artwork);
+                if (picData.size() > 0) {
+                    jbyteArray imageData = env->NewByteArray(picData.size());
+                    env->SetByteArrayRegion(imageData, 0, picData.size(), 
+                        reinterpret_cast<const jbyte*>(picData.data()));
+                    
+                    jstring mimeType = env->NewStringUTF(pic.mimeType().toCString(true));
+                    jstring description = env->NewStringUTF(pic.description().toCString(true));
+                    
+                    jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
+                    artworks.push_back(artwork);
+                }
             }
         }
     }
@@ -243,20 +248,25 @@ Java_aman_taglib_TagLib_getArtwork(JNIEnv *env, jobject /*thiz*/, jstring jFileP
         if (tag && tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
             TagLib::StringList pictureDataList = tag->fieldListMap()["METADATA_BLOCK_PICTURE"];
             for (auto it = pictureDataList.begin(); it != pictureDataList.end(); ++it) {
-                TagLib::ByteVector encodedData = it->data(TagLib::String::UTF8);
+                // Decode base64 first
+                TagLib::ByteVector encodedData = it->data(TagLib::String::Latin1);
+                TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
+                
                 TagLib::FLAC::Picture pic;
-                pic.parse(encodedData);
+                pic.parse(decodedData);
                 
                 TagLib::ByteVector picData = pic.data();
-                jbyteArray imageData = env->NewByteArray(picData.size());
-                env->SetByteArrayRegion(imageData, 0, picData.size(), 
-                    reinterpret_cast<const jbyte*>(picData.data()));
-                
-                jstring mimeType = env->NewStringUTF(pic.mimeType().toCString(true));
-                jstring description = env->NewStringUTF(pic.description().toCString(true));
-                
-                jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
-                artworks.push_back(artwork);
+                if (picData.size() > 0) {
+                    jbyteArray imageData = env->NewByteArray(picData.size());
+                    env->SetByteArrayRegion(imageData, 0, picData.size(), 
+                        reinterpret_cast<const jbyte*>(picData.data()));
+                    
+                    jstring mimeType = env->NewStringUTF(pic.mimeType().toCString(true));
+                    jstring description = env->NewStringUTF(pic.description().toCString(true));
+                    
+                    jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
+                    artworks.push_back(artwork);
+                }
             }
         }
     }
