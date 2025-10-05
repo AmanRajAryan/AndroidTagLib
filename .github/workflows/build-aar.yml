@@ -51,7 +51,7 @@ jobs:
             app/build/outputs/**/*.apk
             app/build/outputs/**/*.aar
             app/build/outputs/**/*.aab          sdkmanager --install "ndk;26.1.10909125" "cmake;3.22.1"
-          echo "NDK installed"
+            echo "NDK installed"
 
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
