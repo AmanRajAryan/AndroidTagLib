@@ -20,6 +20,14 @@ jobs:
       - name: Update git submodules
         run: git submodule update --init --recursive
 
+      - name: Clean and update submodules
+        run: |
+          git submodule deinit -f --all
+          git submodule update --init --recursive --force --checkout
+          git submodule foreach --recursive git reset --hard
+          git submodule foreach --recursive git clean -fdx
+          find . -name '*.cmake' -exec dos2unix {} +
+
       - name: print CMakeLists
         run: cat library/jni/opusfile-0.12/CMakeLists.txt
 
