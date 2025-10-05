@@ -66,7 +66,6 @@ AndroidTagLib/
 
 ## Using the AAR in Your App
 - Add the AAR to your app's `libs/` directory.
-- Add JNI libraries if needed.
 - Use the Java wrapper classes to access TagLib features.
 
 ## How to Use the AAR and Its Methods
