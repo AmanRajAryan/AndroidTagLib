@@ -21,4 +21,10 @@ public class TagLib {
      */
     public native HashMap<String, String> getMetadata(String filePath);
     public native boolean setMetadata(String filePath, HashMap<String, String> metadata);
+
+    /** Extracts the embedded artwork as a byte array, or null if none. */
+    public native byte[] getArtwork(String filePath);
+
+    /** Embeds or replaces the artwork in the file. */
+    public native boolean setArtwork(String filePath, byte[] imageData, String mimeType);
 }
