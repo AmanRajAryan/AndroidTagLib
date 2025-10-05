@@ -244,30 +244,56 @@ Java_aman_taglib_TagLib_getArtwork(JNIEnv *env, jobject /*thiz*/, jstring jFileP
     // For Opus, check for all METADATA_BLOCK_PICTURE entries
     TagLib::Ogg::Opus::File *opusFile = dynamic_cast<TagLib::Ogg::Opus::File*>(f.file());
     if (opusFile) {
+        __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Opus file detected");
         TagLib::Ogg::XiphComment *tag = opusFile->tag();
-        if (tag && tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
-            TagLib::StringList pictureDataList = tag->fieldListMap()["METADATA_BLOCK_PICTURE"];
-            for (auto it = pictureDataList.begin(); it != pictureDataList.end(); ++it) {
-                // Decode base64 first
-                TagLib::ByteVector encodedData = it->data(TagLib::String::Latin1);
-                TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
-                
-                TagLib::FLAC::Picture pic;
-                pic.parse(decodedData);
-                
-                TagLib::ByteVector picData = pic.data();
-                if (picData.size() > 0) {
-                    jbyteArray imageData = env->NewByteArray(picData.size());
-                    env->SetByteArrayRegion(imageData, 0, picData.size(), 
-                        reinterpret_cast<const jbyte*>(picData.data()));
-                    
-                    jstring mimeType = env->NewStringUTF(pic.mimeType().toCString(true));
-                    jstring description = env->NewStringUTF(pic.description().toCString(true));
-                    
-                    jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
-                    artworks.push_back(artwork);
-                }
+        if (tag) {
+            __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Opus tag found");
+            
+            // Debug: print all available fields
+            TagLib::PropertyMap props = tag->properties();
+            for (auto it = props.begin(); it != props.end(); ++it) {
+                __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Field: %s", it->first.toCString(true));
             }
+            
+            if (tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
+                __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "METADATA_BLOCK_PICTURE found");
+                TagLib::StringList pictureDataList = tag->fieldListMap()["METADATA_BLOCK_PICTURE"];
+                __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Picture count: %d", pictureDataList.size());
+                
+                for (auto it = pictureDataList.begin(); it != pictureDataList.end(); ++it) {
+                    // Decode base64 first
+                    TagLib::ByteVector encodedData = it->data(TagLib::String::Latin1);
+                    __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Encoded size: %d", encodedData.size());
+                    
+                    TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
+                    __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Decoded size: %d", decodedData.size());
+                    
+                    TagLib::FLAC::Picture pic;
+                    pic.parse(decodedData);
+                    
+                    TagLib::ByteVector picData = pic.data();
+                    __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Picture data size: %d", picData.size());
+                    
+                    if (picData.size() > 0) {
+                        jbyteArray imageData = env->NewByteArray(picData.size());
+                        env->SetByteArrayRegion(imageData, 0, picData.size(), 
+                            reinterpret_cast<const jbyte*>(picData.data()));
+                        
+                        jstring mimeType = env->NewStringUTF(pic.mimeType().toCString(true));
+                        jstring description = env->NewStringUTF(pic.description().toCString(true));
+                        
+                        jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
+                        artworks.push_back(artwork);
+                        __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Artwork added successfully");
+                    } else {
+                        __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "Picture data is empty");
+                    }
+                }
+            } else {
+                __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "METADATA_BLOCK_PICTURE NOT found");
+            }
+        } else {
+            __android_log_print(ANDROID_LOG_DEBUG, "TagLib", "No Opus tag");
         }
     }
 
@@ -393,6 +419,99 @@ Java_aman_taglib_TagLib_setArtwork(JNIEnv *env, jobject /*thiz*/, jstring jFileP
     }
 
     return success ? JNI_TRUE : JNI_FALSE;
+}
+
+JNIEXPORT jstring JNICALL
+Java_aman_taglib_TagLib_getArtworkDebugInfo(JNIEnv *env, jobject /*thiz*/, jstring jFilePath) {
+    const char *filePath = env->GetStringUTFChars(jFilePath, nullptr);
+    if (!filePath) return env->NewStringUTF("Error: filePath is null");
+
+    std::string debugInfo;
+    TagLib::FileRef f(filePath);
+    env->ReleaseStringUTFChars(jFilePath, filePath);
+
+    if (f.isNull() || !f.file()) {
+        return env->NewStringUTF("Error: File is null or cannot be opened");
+    }
+
+    // Check file type
+    TagLib::MPEG::File *mp3File = dynamic_cast<TagLib::MPEG::File*>(f.file());
+    TagLib::FLAC::File *flacFile = dynamic_cast<TagLib::FLAC::File*>(f.file());
+    TagLib::Ogg::Vorbis::File *oggFile = dynamic_cast<TagLib::Ogg::Vorbis::File*>(f.file());
+    TagLib::Ogg::Opus::File *opusFile = dynamic_cast<TagLib::Ogg::Opus::File*>(f.file());
+
+    if (mp3File) debugInfo += "File type: MP3\n";
+    else if (flacFile) debugInfo += "File type: FLAC\n";
+    else if (oggFile) debugInfo += "File type: Ogg Vorbis\n";
+    else if (opusFile) debugInfo += "File type: Opus\n";
+    else debugInfo += "File type: Unknown\n";
+
+    // For Opus/Vorbis, check all fields
+    if (opusFile) {
+        TagLib::Ogg::XiphComment *tag = opusFile->tag();
+        if (tag) {
+            debugInfo += "Opus tag found: YES\n";
+            debugInfo += "Available fields:\n";
+            
+            TagLib::PropertyMap props = tag->properties();
+            for (auto it = props.begin(); it != props.end(); ++it) {
+                debugInfo += "  - " + it->first.to8Bit(true) + "\n";
+            }
+            
+            if (tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
+                TagLib::StringList pictureDataList = tag->fieldListMap()["METADATA_BLOCK_PICTURE"];
+                debugInfo += "METADATA_BLOCK_PICTURE: FOUND\n";
+                debugInfo += "Picture count: " + std::to_string(pictureDataList.size()) + "\n";
+                
+                if (!pictureDataList.isEmpty()) {
+                    TagLib::ByteVector encodedData = pictureDataList.front().data(TagLib::String::Latin1);
+                    debugInfo += "Encoded size: " + std::to_string(encodedData.size()) + " bytes\n";
+                    
+                    TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
+                    debugInfo += "Decoded size: " + std::to_string(decodedData.size()) + " bytes\n";
+                    
+                    TagLib::FLAC::Picture pic;
+                    pic.parse(decodedData);
+                    debugInfo += "Picture data size: " + std::to_string(pic.data().size()) + " bytes\n";
+                    debugInfo += "MIME type: " + pic.mimeType().to8Bit(true) + "\n";
+                }
+            } else {
+                debugInfo += "METADATA_BLOCK_PICTURE: NOT FOUND\n";
+            }
+        } else {
+            debugInfo += "Opus tag found: NO\n";
+        }
+    }
+
+    if (oggFile) {
+        TagLib::Ogg::XiphComment *tag = oggFile->tag();
+        if (tag) {
+            debugInfo += "Vorbis tag found: YES\n";
+            debugInfo += "Available fields:\n";
+            
+            TagLib::PropertyMap props = tag->properties();
+            for (auto it = props.begin(); it != props.end(); ++it) {
+                debugInfo += "  - " + it->first.to8Bit(true) + "\n";
+            }
+            
+            if (tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
+                debugInfo += "METADATA_BLOCK_PICTURE: FOUND\n";
+            } else {
+                debugInfo += "METADATA_BLOCK_PICTURE: NOT FOUND\n";
+            }
+        }
+    }
+
+    if (mp3File && mp3File->ID3v2Tag()) {
+        TagLib::ID3v2::FrameList frames = mp3File->ID3v2Tag()->frameListMap()["APIC"];
+        debugInfo += "APIC frames found: " + std::to_string(frames.size()) + "\n";
+    }
+
+    if (flacFile) {
+        debugInfo += "FLAC pictures: " + std::to_string(flacFile->pictureList().size()) + "\n";
+    }
+
+    return env->NewStringUTF(debugInfo.c_str());
 }
 
 }
