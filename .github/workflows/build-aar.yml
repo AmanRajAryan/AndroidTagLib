@@ -60,6 +60,4 @@ jobs:
         with:
           name: android-artifacts
           path: |
-            app/build/outputs/**/*.apk
-            app/build/outputs/**/*.aar
-            app/build/outputs/**/*.aab
+            library/build/outputs/**/*.aar
