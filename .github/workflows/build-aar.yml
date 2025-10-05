@@ -16,6 +16,9 @@ jobs:
           submodules: true
           fetch-depth: 0
 
+      - name: install utfcpp
+        run: sudo apt-get install -y  libutfcpp-dev
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -34,8 +37,7 @@ jobs:
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
 
-      - name: install utfcpp
-        run: sudo apt-get install -y  libutfcpp-dev
+      
 
 
       - name: git submodules
