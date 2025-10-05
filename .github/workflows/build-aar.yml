@@ -35,7 +35,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: install utfcpp
-        run: sudo apt-get install utfcpp utf8cpp libutfcpp-dev
+        run: sudo apt-get search utf && sudo apt-get install -y  utf8cpp libutfcpp-dev
 
 
       - name: git submodules
