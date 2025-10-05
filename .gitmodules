@@ -11,6 +11,10 @@
 	path = library/jni/opus-1.3.1
 	url = https://github.com/xiph/opus.git
 
+[submodule "library/jni/opusfile-0.12"]
+	path = library/jni/opusfile-0.12
+	url = https://github.com/AmanRajAryan/opusfile.git
+
 [submodule "library/taglib"]
 	path = library/taglib
 	url = https://github.com/taglib/taglib.git
