@@ -39,17 +39,17 @@ std::vector<std::pair<TagLib::ByteVector, std::string>> extractOggAttachedPictur
     file.close();
     
     // Look for JPEG or PNG signatures in the file
-    // JPEG starts with FF D8 FF
-    // PNG starts with 89 50 4E 47
+    // Be more strict to avoid false positives
     
     for (size_t i = 0; i < buffer.size() - 4; i++) {
-        // Check for JPEG signature
+        // Check for JPEG signature (FF D8 FF E0 or FF D8 FF E1)
         if ((unsigned char)buffer[i] == 0xFF && 
             (unsigned char)buffer[i+1] == 0xD8 && 
-            (unsigned char)buffer[i+2] == 0xFF) {
+            (unsigned char)buffer[i+2] == 0xFF &&
+            ((unsigned char)buffer[i+3] == 0xE0 || (unsigned char)buffer[i+3] == 0xE1)) {
             
             // Find JPEG end marker (FF D9)
-            size_t endPos = i + 2;
+            size_t endPos = i + 4;
             while (endPos < buffer.size() - 1) {
                 if ((unsigned char)buffer[endPos] == 0xFF && 
                     (unsigned char)buffer[endPos+1] == 0xD9) {
@@ -59,33 +59,42 @@ std::vector<std::pair<TagLib::ByteVector, std::string>> extractOggAttachedPictur
                 endPos++;
             }
             
-            if (endPos < buffer.size()) {
-                TagLib::ByteVector imageData(buffer.data() + i, endPos - i);
+            // Validate size (artwork should be at least 1KB and less than 10MB)
+            size_t imageSize = endPos - i;
+            if (endPos < buffer.size() && imageSize > 1024 && imageSize < 10 * 1024 * 1024) {
+                TagLib::ByteVector imageData(buffer.data() + i, imageSize);
                 pictures.push_back(std::make_pair(imageData, "image/jpeg"));
                 i = endPos; // Skip past this image
             }
         }
-        // Check for PNG signature
-        else if ((unsigned char)buffer[i] == 0x89 && 
+        // Check for PNG signature (89 50 4E 47 0D 0A 1A 0A)
+        else if (i < buffer.size() - 8 &&
+                 (unsigned char)buffer[i] == 0x89 && 
                  (unsigned char)buffer[i+1] == 0x50 && 
                  (unsigned char)buffer[i+2] == 0x4E && 
-                 (unsigned char)buffer[i+3] == 0x47) {
+                 (unsigned char)buffer[i+3] == 0x47 &&
+                 (unsigned char)buffer[i+4] == 0x0D &&
+                 (unsigned char)buffer[i+5] == 0x0A &&
+                 (unsigned char)buffer[i+6] == 0x1A &&
+                 (unsigned char)buffer[i+7] == 0x0A) {
             
-            // PNG ends with IEND chunk (00 00 00 00 49 45 4E 44 AE 42 60 82)
+            // PNG ends with IEND chunk (49 45 4E 44 followed by 4-byte CRC)
             size_t endPos = i + 8; // Skip PNG signature
             while (endPos < buffer.size() - 12) {
                 if ((unsigned char)buffer[endPos] == 0x49 && 
                     (unsigned char)buffer[endPos+1] == 0x45 && 
                     (unsigned char)buffer[endPos+2] == 0x4E && 
                     (unsigned char)buffer[endPos+3] == 0x44) {
-                    endPos += 8; // Include IEND chunk CRC
+                    endPos += 8; // Include IEND chunk + CRC
                     break;
                 }
                 endPos++;
             }
             
-            if (endPos < buffer.size()) {
-                TagLib::ByteVector imageData(buffer.data() + i, endPos - i);
+            // Validate size (artwork should be at least 1KB and less than 10MB)
+            size_t imageSize = endPos - i;
+            if (endPos < buffer.size() && imageSize > 1024 && imageSize < 10 * 1024 * 1024) {
+                TagLib::ByteVector imageData(buffer.data() + i, imageSize);
                 pictures.push_back(std::make_pair(imageData, "image/png"));
                 i = endPos; // Skip past this image
             }
