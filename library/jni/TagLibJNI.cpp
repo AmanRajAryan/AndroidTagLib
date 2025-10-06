@@ -466,7 +466,7 @@ Java_aman_taglib_TagLib_getArtworkDebugInfo(JNIEnv *env, jobject /*thiz*/, jstri
             debugInfo += "All tag fields:\n";
             const TagLib::Ogg::FieldListMap &fieldMap = tag->fieldListMap();
             for (auto it = fieldMap.begin(); it != fieldMap.end(); ++it) {
-                debugInfo += "  - " + it->first.upper() + "\n";
+                debugInfo += "  - " + it->first.upper().to8Bit(true) + "\n";
             }
             
             if (tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
