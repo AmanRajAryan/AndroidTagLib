@@ -38,72 +38,38 @@ std::vector<std::pair<TagLib::ByteVector, std::string>> extractOggAttachedPictur
     file.read(buffer.data(), fileSize);
     file.close();
     
-    // Strategy: Look for complete valid JPEG/PNG images
-    // Also check areas after "OpusTags" or similar markers
-    
-    bool foundAny = false;
-    
-    for (size_t i = 0; i < buffer.size() - 10; i++) {
-        // Check for JPEG JFIF signature (FF D8 FF E0 xx xx 4A 46 49 46)
+    // More aggressive search - look for ANY JPEG start (FF D8) followed by end (FF D9)
+    for (size_t i = 0; i < buffer.size() - 2; i++) {
+        // Find JPEG start marker (FF D8)
         if ((unsigned char)buffer[i] == 0xFF && 
-            (unsigned char)buffer[i+1] == 0xD8 && 
-            (unsigned char)buffer[i+2] == 0xFF &&
-            (unsigned char)buffer[i+3] == 0xE0 &&
-            i + 10 < buffer.size() &&
-            buffer[i+6] == 'J' && buffer[i+7] == 'F' && 
-            buffer[i+8] == 'I' && buffer[i+9] == 'F') {
+            (unsigned char)buffer[i+1] == 0xD8) {
             
-            // Find JPEG end marker (FF D9)
-            size_t endPos = i + 10;
-            bool foundEnd = false;
-            while (endPos < buffer.size() - 1 && endPos < i + 10 * 1024 * 1024) {
-                if ((unsigned char)buffer[endPos] == 0xFF && 
-                    (unsigned char)buffer[endPos+1] == 0xD9) {
-                    endPos += 2;
-                    foundEnd = true;
-                    break;
+            // Look ahead to verify this looks like a real JPEG
+            // Check if next byte is FF (marker)
+            if (i + 2 < buffer.size() && (unsigned char)buffer[i+2] == 0xFF) {
+                // Find JPEG end marker (FF D9)
+                size_t endPos = i + 2;
+                bool foundEnd = false;
+                
+                while (endPos < buffer.size() - 1 && endPos < i + 10 * 1024 * 1024) {
+                    if ((unsigned char)buffer[endPos] == 0xFF && 
+                        (unsigned char)buffer[endPos+1] == 0xD9) {
+                        endPos += 2;
+                        foundEnd = true;
+                        break;
+                    }
+                    endPos++;
                 }
-                endPos++;
-            }
-            
-            if (foundEnd) {
-                size_t imageSize = endPos - i;
-                if (imageSize > 1024 && imageSize < 10 * 1024 * 1024) {
-                    TagLib::ByteVector imageData(buffer.data() + i, imageSize);
-                    pictures.push_back(std::make_pair(imageData, "image/jpeg"));
-                    foundAny = true;
-                    i = endPos;
-                    continue;
-                }
-            }
-        }
-        
-        // Check for JPEG EXIF signature (FF D8 FF E1)
-        if ((unsigned char)buffer[i] == 0xFF && 
-            (unsigned char)buffer[i+1] == 0xD8 && 
-            (unsigned char)buffer[i+2] == 0xFF &&
-            (unsigned char)buffer[i+3] == 0xE1) {
-            
-            size_t endPos = i + 4;
-            bool foundEnd = false;
-            while (endPos < buffer.size() - 1 && endPos < i + 10 * 1024 * 1024) {
-                if ((unsigned char)buffer[endPos] == 0xFF && 
-                    (unsigned char)buffer[endPos+1] == 0xD9) {
-                    endPos += 2;
-                    foundEnd = true;
-                    break;
-                }
-                endPos++;
-            }
-            
-            if (foundEnd) {
-                size_t imageSize = endPos - i;
-                if (imageSize > 1024 && imageSize < 10 * 1024 * 1024) {
-                    TagLib::ByteVector imageData(buffer.data() + i, imageSize);
-                    pictures.push_back(std::make_pair(imageData, "image/jpeg"));
-                    foundAny = true;
-                    i = endPos;
-                    continue;
+                
+                if (foundEnd) {
+                    size_t imageSize = endPos - i;
+                    // Accept images 5KB to 10MB
+                    if (imageSize > 5000 && imageSize < 10 * 1024 * 1024) {
+                        TagLib::ByteVector imageData(buffer.data() + i, imageSize);
+                        pictures.push_back(std::make_pair(imageData, "image/jpeg"));
+                        i = endPos;
+                        continue;
+                    }
                 }
             }
         }
@@ -122,11 +88,12 @@ std::vector<std::pair<TagLib::ByteVector, std::string>> extractOggAttachedPictur
             // Find PNG IEND chunk
             size_t endPos = i + 8;
             bool foundEnd = false;
+            
             while (endPos < buffer.size() - 12 && endPos < i + 10 * 1024 * 1024) {
-                if ((unsigned char)buffer[endPos] == 'I' && 
-                    (unsigned char)buffer[endPos+1] == 'E' && 
-                    (unsigned char)buffer[endPos+2] == 'N' && 
-                    (unsigned char)buffer[endPos+3] == 'D') {
+                if (buffer[endPos] == 'I' && 
+                    buffer[endPos+1] == 'E' && 
+                    buffer[endPos+2] == 'N' && 
+                    buffer[endPos+3] == 'D') {
                     endPos += 8; // Include CRC
                     foundEnd = true;
                     break;
@@ -136,10 +103,9 @@ std::vector<std::pair<TagLib::ByteVector, std::string>> extractOggAttachedPictur
             
             if (foundEnd) {
                 size_t imageSize = endPos - i;
-                if (imageSize > 1024 && imageSize < 10 * 1024 * 1024) {
+                if (imageSize > 5000 && imageSize < 10 * 1024 * 1024) {
                     TagLib::ByteVector imageData(buffer.data() + i, imageSize);
                     pictures.push_back(std::make_pair(imageData, "image/png"));
-                    foundAny = true;
                     i = endPos;
                     continue;
                 }
