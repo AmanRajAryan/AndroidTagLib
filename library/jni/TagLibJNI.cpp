@@ -5,10 +5,15 @@
 #include "mpeg/id3v2/id3v2.h"
 #include "mpeg/id3v2/frames/attachedpictureframe.h"
 #include "flacpicture.h"
+#include "oggfile.h"
+#include "oggpage.h"
+#include "oggpageheader.h"
 
 // Skeletal JNI wrapper for TagLib
 #include <jni.h>
 #include <string>
+#include <fstream>
+#include <vector>
 #include "fileref.h"
 #include "tag.h"
 #include "mpegfile.h"
@@ -16,6 +21,79 @@
 #include "id3v2frame.h"
 
 extern "C" {
+
+// Helper function to extract artwork from Ogg/Opus attached picture streams
+std::vector<std::pair<TagLib::ByteVector, std::string>> extractOggAttachedPictures(const char* filePath) {
+    std::vector<std::pair<TagLib::ByteVector, std::string>> pictures;
+    
+    std::ifstream file(filePath, std::ios::binary);
+    if (!file.is_open()) return pictures;
+    
+    // Read entire file
+    file.seekg(0, std::ios::end);
+    size_t fileSize = file.tellg();
+    file.seekg(0, std::ios::beg);
+    
+    std::vector<char> buffer(fileSize);
+    file.read(buffer.data(), fileSize);
+    file.close();
+    
+    // Look for JPEG or PNG signatures in the file
+    // JPEG starts with FF D8 FF
+    // PNG starts with 89 50 4E 47
+    
+    for (size_t i = 0; i < buffer.size() - 4; i++) {
+        // Check for JPEG signature
+        if ((unsigned char)buffer[i] == 0xFF && 
+            (unsigned char)buffer[i+1] == 0xD8 && 
+            (unsigned char)buffer[i+2] == 0xFF) {
+            
+            // Find JPEG end marker (FF D9)
+            size_t endPos = i + 2;
+            while (endPos < buffer.size() - 1) {
+                if ((unsigned char)buffer[endPos] == 0xFF && 
+                    (unsigned char)buffer[endPos+1] == 0xD9) {
+                    endPos += 2;
+                    break;
+                }
+                endPos++;
+            }
+            
+            if (endPos < buffer.size()) {
+                TagLib::ByteVector imageData(buffer.data() + i, endPos - i);
+                pictures.push_back(std::make_pair(imageData, "image/jpeg"));
+                i = endPos; // Skip past this image
+            }
+        }
+        // Check for PNG signature
+        else if ((unsigned char)buffer[i] == 0x89 && 
+                 (unsigned char)buffer[i+1] == 0x50 && 
+                 (unsigned char)buffer[i+2] == 0x4E && 
+                 (unsigned char)buffer[i+3] == 0x47) {
+            
+            // PNG ends with IEND chunk (00 00 00 00 49 45 4E 44 AE 42 60 82)
+            size_t endPos = i + 8; // Skip PNG signature
+            while (endPos < buffer.size() - 12) {
+                if ((unsigned char)buffer[endPos] == 0x49 && 
+                    (unsigned char)buffer[endPos+1] == 0x45 && 
+                    (unsigned char)buffer[endPos+2] == 0x4E && 
+                    (unsigned char)buffer[endPos+3] == 0x44) {
+                    endPos += 8; // Include IEND chunk CRC
+                    break;
+                }
+                endPos++;
+            }
+            
+            if (endPos < buffer.size()) {
+                TagLib::ByteVector imageData(buffer.data() + i, endPos - i);
+                pictures.push_back(std::make_pair(imageData, "image/png"));
+                i = endPos; // Skip past this image
+            }
+        }
+    }
+    
+    return pictures;
+}
 
 JNIEXPORT jobject JNICALL Java_aman_taglib_TagLib_getMetadata(JNIEnv* env, jobject thiz, jstring filePath) {
     const char* pathChars = env->GetStringUTFChars(filePath, nullptr);
@@ -241,60 +319,77 @@ Java_aman_taglib_TagLib_getArtwork(JNIEnv *env, jobject /*thiz*/, jstring jFileP
         }
     }
 
-    // For Opus, check for all METADATA_BLOCK_PICTURE entries
+    // For Opus, check attached picture streams FIRST (higher priority), then tags
     TagLib::Ogg::Opus::File *opusFile = dynamic_cast<TagLib::Ogg::Opus::File*>(f.file());
     if (opusFile) {
-        TagLib::Ogg::XiphComment *tag = opusFile->tag();
-        if (tag) {
-            // Check for METADATA_BLOCK_PICTURE
-            if (tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
-                TagLib::StringList pictureDataList = tag->fieldListMap()["METADATA_BLOCK_PICTURE"];
-                for (auto it = pictureDataList.begin(); it != pictureDataList.end(); ++it) {
-                    // Decode base64 first
-                    TagLib::ByteVector encodedData = it->data(TagLib::String::Latin1);
-                    TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
-                    
-                    TagLib::FLAC::Picture pic;
-                    pic.parse(decodedData);
-                    
-                    TagLib::ByteVector picData = pic.data();
-                    if (picData.size() > 0) {
-                        jbyteArray imageData = env->NewByteArray(picData.size());
-                        env->SetByteArrayRegion(imageData, 0, picData.size(), 
-                            reinterpret_cast<const jbyte*>(picData.data()));
+        // First, try extracting from attached picture streams (yt-dlp format - PRIORITY)
+        std::vector<std::pair<TagLib::ByteVector, std::string>> pictures = 
+            extractOggAttachedPictures(filePath);
+        
+        for (const auto& pic : pictures) {
+            jbyteArray imageData = env->NewByteArray(pic.first.size());
+            env->SetByteArrayRegion(imageData, 0, pic.first.size(), 
+                reinterpret_cast<const jbyte*>(pic.first.data()));
+            
+            jstring mimeType = env->NewStringUTF(pic.second.c_str());
+            jstring description = env->NewStringUTF("Cover (front)");
+            
+            jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
+            artworks.push_back(artwork);
+        }
+        
+        // If no attached pictures found, check Vorbis comment tags
+        if (artworks.empty()) {
+            TagLib::Ogg::XiphComment *tag = opusFile->tag();
+            if (tag) {
+                // Check for METADATA_BLOCK_PICTURE in comments
+                if (tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
+                    TagLib::StringList pictureDataList = tag->fieldListMap()["METADATA_BLOCK_PICTURE"];
+                    for (auto it = pictureDataList.begin(); it != pictureDataList.end(); ++it) {
+                        TagLib::ByteVector encodedData = it->data(TagLib::String::Latin1);
+                        TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
                         
-                        jstring mimeType = env->NewStringUTF(pic.mimeType().toCString(true));
-                        jstring description = env->NewStringUTF(pic.description().toCString(true));
+                        TagLib::FLAC::Picture pic;
+                        pic.parse(decodedData);
                         
-                        jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
-                        artworks.push_back(artwork);
+                        TagLib::ByteVector picData = pic.data();
+                        if (picData.size() > 0) {
+                            jbyteArray imageData = env->NewByteArray(picData.size());
+                            env->SetByteArrayRegion(imageData, 0, picData.size(), 
+                                reinterpret_cast<const jbyte*>(picData.data()));
+                            
+                            jstring mimeType = env->NewStringUTF(pic.mimeType().toCString(true));
+                            jstring description = env->NewStringUTF(pic.description().toCString(true));
+                            
+                            jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
+                            artworks.push_back(artwork);
+                        }
                     }
                 }
-            }
-            
-            // Also check for COVERART (alternative field name)
-            if (tag->fieldListMap().contains("COVERART")) {
-                TagLib::StringList coverArtList = tag->fieldListMap()["COVERART"];
-                for (auto it = coverArtList.begin(); it != coverArtList.end(); ++it) {
-                    TagLib::ByteVector encodedData = it->data(TagLib::String::Latin1);
-                    TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
-                    
-                    if (decodedData.size() > 0) {
-                        jbyteArray imageData = env->NewByteArray(decodedData.size());
-                        env->SetByteArrayRegion(imageData, 0, decodedData.size(), 
-                            reinterpret_cast<const jbyte*>(decodedData.data()));
+                
+                // Also check for COVERART (alternative field name)
+                if (tag->fieldListMap().contains("COVERART")) {
+                    TagLib::StringList coverArtList = tag->fieldListMap()["COVERART"];
+                    for (auto it = coverArtList.begin(); it != coverArtList.end(); ++it) {
+                        TagLib::ByteVector encodedData = it->data(TagLib::String::Latin1);
+                        TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
                         
-                        // Try to get mime type from COVERARTMIME field
-                        std::string mimeTypeStr = "image/jpeg"; // default
-                        if (tag->fieldListMap().contains("COVERARTMIME")) {
-                            mimeTypeStr = tag->fieldListMap()["COVERARTMIME"].front().to8Bit(true);
+                        if (decodedData.size() > 0) {
+                            jbyteArray imageData = env->NewByteArray(decodedData.size());
+                            env->SetByteArrayRegion(imageData, 0, decodedData.size(), 
+                                reinterpret_cast<const jbyte*>(decodedData.data()));
+                            
+                            std::string mimeTypeStr = "image/jpeg";
+                            if (tag->fieldListMap().contains("COVERARTMIME")) {
+                                mimeTypeStr = tag->fieldListMap()["COVERARTMIME"].front().to8Bit(true);
+                            }
+                            
+                            jstring mimeType = env->NewStringUTF(mimeTypeStr.c_str());
+                            jstring description = env->NewStringUTF("");
+                            
+                            jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
+                            artworks.push_back(artwork);
                         }
-                        
-                        jstring mimeType = env->NewStringUTF(mimeTypeStr.c_str());
-                        jstring description = env->NewStringUTF("");
-                        
-                        jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
-                        artworks.push_back(artwork);
                     }
                 }
             }
