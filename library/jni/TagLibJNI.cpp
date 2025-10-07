@@ -210,28 +210,23 @@ Java_aman_taglib_TagLib_getArtwork(JNIEnv *env, jobject /*thiz*/, jstring jFileP
         }
     }
 
-    // For Ogg Vorbis, check for all METADATA_BLOCK_PICTURE entries
+    // For Opus and Vorbis, use pictureList() API
     TagLib::Ogg::Vorbis::File *oggFile = dynamic_cast<TagLib::Ogg::Vorbis::File*>(f.file());
     if (oggFile) {
         TagLib::Ogg::XiphComment *tag = oggFile->tag();
-        if (tag && tag->fieldListMap().contains("METADATA_BLOCK_PICTURE")) {
-            TagLib::StringList pictureDataList = tag->fieldListMap()["METADATA_BLOCK_PICTURE"];
-            for (auto it = pictureDataList.begin(); it != pictureDataList.end(); ++it) {
-                // Decode base64 first
-                TagLib::ByteVector encodedData = it->data(TagLib::String::Latin1);
-                TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
+        if (tag) {
+            TagLib::List<TagLib::FLAC::Picture*> pictures = tag->pictureList();
+            for (auto it = pictures.begin(); it != pictures.end(); ++it) {
+                TagLib::FLAC::Picture *pic = *it;
                 
-                TagLib::FLAC::Picture pic;
-                pic.parse(decodedData);
-                
-                TagLib::ByteVector picData = pic.data();
+                TagLib::ByteVector picData = pic->data();
                 if (picData.size() > 0) {
                     jbyteArray imageData = env->NewByteArray(picData.size());
                     env->SetByteArrayRegion(imageData, 0, picData.size(), 
                         reinterpret_cast<const jbyte*>(picData.data()));
                     
-                    jstring mimeType = env->NewStringUTF(pic.mimeType().toCString(true));
-                    jstring description = env->NewStringUTF(pic.description().toCString(true));
+                    jstring mimeType = env->NewStringUTF(pic->mimeType().toCString(true));
+                    jstring description = env->NewStringUTF(pic->description().toCString(true));
                     
                     jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
                     artworks.push_back(artwork);
@@ -240,69 +235,26 @@ Java_aman_taglib_TagLib_getArtwork(JNIEnv *env, jobject /*thiz*/, jstring jFileP
         }
     }
 
-    // For Opus, check for METADATA_BLOCK_PICTURE and COVERART (case-insensitive)
+    // For Opus, use pictureList() API
     TagLib::Ogg::Opus::File *opusFile = dynamic_cast<TagLib::Ogg::Opus::File*>(f.file());
     if (opusFile) {
         TagLib::Ogg::XiphComment *tag = opusFile->tag();
         if (tag) {
-            const TagLib::Ogg::FieldListMap &fieldMap = tag->fieldListMap();
-            
-            // Check for METADATA_BLOCK_PICTURE (try various cases)
-            for (auto it = fieldMap.begin(); it != fieldMap.end(); ++it) {
-                TagLib::String fieldName = it->first.upper();
+            TagLib::List<TagLib::FLAC::Picture*> pictures = tag->pictureList();
+            for (auto it = pictures.begin(); it != pictures.end(); ++it) {
+                TagLib::FLAC::Picture *pic = *it;
                 
-                if (fieldName == "METADATA_BLOCK_PICTURE") {
-                    TagLib::StringList pictureDataList = it->second;
-                    for (auto picIt = pictureDataList.begin(); picIt != pictureDataList.end(); ++picIt) {
-                        TagLib::ByteVector encodedData = picIt->data(TagLib::String::Latin1);
-                        TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
-                        
-                        TagLib::FLAC::Picture pic;
-                        pic.parse(decodedData);
-                        
-                        TagLib::ByteVector picData = pic.data();
-                        if (picData.size() > 0) {
-                            jbyteArray imageData = env->NewByteArray(picData.size());
-                            env->SetByteArrayRegion(imageData, 0, picData.size(), 
-                                reinterpret_cast<const jbyte*>(picData.data()));
-                            
-                            jstring mimeType = env->NewStringUTF(pic.mimeType().toCString(true));
-                            jstring description = env->NewStringUTF(pic.description().toCString(true));
-                            
-                            jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
-                            artworks.push_back(artwork);
-                        }
-                    }
-                }
-                
-                // Also check for COVERART
-                if (fieldName == "COVERART") {
-                    TagLib::StringList coverArtList = it->second;
-                    for (auto picIt = coverArtList.begin(); picIt != coverArtList.end(); ++picIt) {
-                        TagLib::ByteVector encodedData = picIt->data(TagLib::String::Latin1);
-                        TagLib::ByteVector decodedData = TagLib::ByteVector::fromBase64(encodedData);
-                        
-                        if (decodedData.size() > 0) {
-                            jbyteArray imageData = env->NewByteArray(decodedData.size());
-                            env->SetByteArrayRegion(imageData, 0, decodedData.size(), 
-                                reinterpret_cast<const jbyte*>(decodedData.data()));
-                            
-                            std::string mimeTypeStr = "image/jpeg";
-                            // Check for COVERARTMIME
-                            for (auto mimeIt = fieldMap.begin(); mimeIt != fieldMap.end(); ++mimeIt) {
-                                if (mimeIt->first.upper() == "COVERARTMIME") {
-                                    mimeTypeStr = mimeIt->second.front().to8Bit(true);
-                                    break;
-                                }
-                            }
-                            
-                            jstring mimeType = env->NewStringUTF(mimeTypeStr.c_str());
-                            jstring description = env->NewStringUTF("");
-                            
-                            jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
-                            artworks.push_back(artwork);
-                        }
-                    }
+                TagLib::ByteVector picData = pic->data();
+                if (picData.size() > 0) {
+                    jbyteArray imageData = env->NewByteArray(picData.size());
+                    env->SetByteArrayRegion(imageData, 0, picData.size(), 
+                        reinterpret_cast<const jbyte*>(picData.data()));
+                    
+                    jstring mimeType = env->NewStringUTF(pic->mimeType().toCString(true));
+                    jstring description = env->NewStringUTF(pic->description().toCString(true));
+                    
+                    jobject artwork = env->NewObject(artworkClass, constructor, imageData, mimeType, description);
+                    artworks.push_back(artwork);
                 }
             }
         }
@@ -383,54 +335,42 @@ Java_aman_taglib_TagLib_setArtwork(JNIEnv *env, jobject /*thiz*/, jstring jFileP
         success = flacFile->save();
     }
 
-    // Handle Ogg Vorbis
+    // Handle Ogg Vorbis - use pictureList API
     TagLib::Ogg::Vorbis::File *oggFile = dynamic_cast<TagLib::Ogg::Vorbis::File*>(f.file());
     if (oggFile) {
         TagLib::Ogg::XiphComment *tag = oggFile->tag();
         if (tag) {
-            // Remove existing picture
-            tag->removeFields("METADATA_BLOCK_PICTURE");
+            // Remove all existing pictures
+            tag->removeAllPictures();
             
-            // Create FLAC picture and encode it
-            TagLib::FLAC::Picture pic;
-            pic.setData(imageData);
-            pic.setMimeType(mimeType);
-            pic.setDescription(description);
-            pic.setType(TagLib::FLAC::Picture::FrontCover);
+            // Create new picture
+            TagLib::FLAC::Picture *pic = new TagLib::FLAC::Picture();
+            pic->setData(imageData);
+            pic->setMimeType(mimeType);
+            pic->setDescription(description);
+            pic->setType(TagLib::FLAC::Picture::FrontCover);
             
-            TagLib::ByteVector encodedData = pic.render();
-            tag->addField("METADATA_BLOCK_PICTURE", 
-                TagLib::String(encodedData.toBase64()), true);
-            
+            tag->addPicture(pic);
             success = oggFile->save();
         }
     }
 
-    // Handle Opus
+    // Handle Opus - use pictureList API
     TagLib::Ogg::Opus::File *opusFile = dynamic_cast<TagLib::Ogg::Opus::File*>(f.file());
     if (opusFile) {
         TagLib::Ogg::XiphComment *tag = opusFile->tag();
         if (tag) {
-            // Remove existing pictures
-            tag->removeFields("METADATA_BLOCK_PICTURE");
-            tag->removeFields("COVERART");
-            tag->removeFields("COVERARTMIME");
+            // Remove all existing pictures
+            tag->removeAllPictures();
             
-            // Create FLAC picture and encode it
-            TagLib::FLAC::Picture pic;
-            pic.setData(imageData);
-            pic.setMimeType(mimeType);
-            pic.setDescription(description);
-            pic.setType(TagLib::FLAC::Picture::FrontCover);
+            // Create new picture
+            TagLib::FLAC::Picture *pic = new TagLib::FLAC::Picture();
+            pic->setData(imageData);
+            pic->setMimeType(mimeType);
+            pic->setDescription(description);
+            pic->setType(TagLib::FLAC::Picture::FrontCover);
             
-            // Render and encode to base64
-            TagLib::ByteVector pictureData = pic.render();
-            TagLib::ByteVector base64Data = pictureData.toBase64();
-            
-            // Add as METADATA_BLOCK_PICTURE field
-            tag->addField("METADATA_BLOCK_PICTURE", 
-                TagLib::String(base64Data, TagLib::String::Latin1), false);
-            
+            tag->addPicture(pic);
             success = opusFile->save();
         }
     }
