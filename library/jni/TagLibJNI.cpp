@@ -411,8 +411,10 @@ Java_aman_taglib_TagLib_setArtwork(JNIEnv *env, jobject /*thiz*/, jstring jFileP
     if (opusFile) {
         TagLib::Ogg::XiphComment *tag = opusFile->tag();
         if (tag) {
-            // Remove existing picture
+            // Remove existing pictures
             tag->removeFields("METADATA_BLOCK_PICTURE");
+            tag->removeFields("COVERART");
+            tag->removeFields("COVERARTMIME");
             
             // Create FLAC picture and encode it
             TagLib::FLAC::Picture pic;
@@ -421,9 +423,13 @@ Java_aman_taglib_TagLib_setArtwork(JNIEnv *env, jobject /*thiz*/, jstring jFileP
             pic.setDescription(description);
             pic.setType(TagLib::FLAC::Picture::FrontCover);
             
-            TagLib::ByteVector encodedData = pic.render();
+            // Render and encode to base64
+            TagLib::ByteVector pictureData = pic.render();
+            TagLib::ByteVector base64Data = pictureData.toBase64();
+            
+            // Add as METADATA_BLOCK_PICTURE field
             tag->addField("METADATA_BLOCK_PICTURE", 
-                TagLib::String(encodedData.toBase64()), true);
+                TagLib::String(base64Data, TagLib::String::Latin1), false);
             
             success = opusFile->save();
         }
