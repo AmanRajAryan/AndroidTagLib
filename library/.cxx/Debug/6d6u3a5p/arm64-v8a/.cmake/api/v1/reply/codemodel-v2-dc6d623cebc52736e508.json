@@ -1,0 +1,741 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						6,
+						7,
+						10,
+						11
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						35
+					]
+				},
+				{
+					"build" : "taglib",
+					"childIndexes" : 
+					[
+						2,
+						3,
+						4
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-taglib-Debug-e6b16b14c3bf90592a30.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5.0"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "taglib",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						26,
+						27,
+						28,
+						43
+					]
+				},
+				{
+					"build" : "taglib/3rdparty/utfcpp",
+					"jsonFile" : "directory-taglib.3rdparty.utfcpp-Debug-c27dcaeb9802825a3ace.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0.2"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 2,
+					"source" : "taglib/3rdparty/utfcpp"
+				},
+				{
+					"build" : "taglib/taglib",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-taglib.taglib-Debug-cee84eeaef0e93392a3a.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5.0"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 1,
+					"source" : "taglib/taglib",
+					"targetIndexes" : 
+					[
+						33
+					]
+				},
+				{
+					"build" : "taglib/bindings",
+					"childIndexes" : 
+					[
+						5
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-taglib.bindings-Debug-8e68d2c22ab1b7283e6d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5.0"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 1,
+					"source" : "taglib/bindings"
+				},
+				{
+					"build" : "taglib/bindings/c",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-taglib.bindings.c-Debug-06c669765fa8e3e3aeab.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5.0"
+					},
+					"parentIndex" : 4,
+					"projectIndex" : 1,
+					"source" : "taglib/bindings/c",
+					"targetIndexes" : 
+					[
+						34
+					]
+				},
+				{
+					"build" : "jni/libogg-1.3.5",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-jni.libogg-1.3.5-Debug-f25c34c0400eb39792c8.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 3,
+					"source" : "jni/libogg-1.3.5",
+					"targetIndexes" : 
+					[
+						29,
+						36,
+						37
+					]
+				},
+				{
+					"build" : "jni/libvorbis-1.3.7",
+					"childIndexes" : 
+					[
+						8,
+						9
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-jni.libvorbis-1.3.7-Debug-086cd31c56e5699ca15b.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 4,
+					"source" : "jni/libvorbis-1.3.7"
+				},
+				{
+					"build" : "jni/libvorbis-1.3.7/lib",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-jni.libvorbis-1.3.7.lib-Debug-d20b4739c3cf2d55a224.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 7,
+					"projectIndex" : 4,
+					"source" : "jni/libvorbis-1.3.7/lib",
+					"targetIndexes" : 
+					[
+						44,
+						46,
+						47
+					]
+				},
+				{
+					"build" : "jni/libvorbis-1.3.7/test",
+					"jsonFile" : "directory-jni.libvorbis-1.3.7.test-Debug-e6d5bd0dc5985d81a323.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 7,
+					"projectIndex" : 4,
+					"source" : "jni/libvorbis-1.3.7/test",
+					"targetIndexes" : 
+					[
+						45
+					]
+				},
+				{
+					"build" : "jni/opus-1.3.1",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-jni.opus-1.3.1-Debug-58779f479abfefdddf3e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 5,
+					"source" : "jni/opus-1.3.1",
+					"targetIndexes" : 
+					[
+						30,
+						38,
+						39,
+						40,
+						41,
+						42
+					]
+				},
+				{
+					"build" : "jni/opusfile-0.12",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-jni.opusfile-0.12-Debug-3d4f04f4e1edf7f5afbb.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 6,
+					"source" : "jni/opusfile-0.12",
+					"targetIndexes" : 
+					[
+						31,
+						32
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1,
+						3,
+						4,
+						5,
+						6
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "TagLibJNI",
+					"targetIndexes" : 
+					[
+						35
+					]
+				},
+				{
+					"childIndexes" : 
+					[
+						2
+					],
+					"directoryIndexes" : 
+					[
+						1,
+						3,
+						4,
+						5
+					],
+					"name" : "taglib",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						26,
+						27,
+						28,
+						33,
+						34,
+						43
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2
+					],
+					"name" : "utf8cpp",
+					"parentIndex" : 1
+				},
+				{
+					"directoryIndexes" : 
+					[
+						6
+					],
+					"name" : "ogg",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						29,
+						36,
+						37
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						7,
+						8,
+						9
+					],
+					"name" : "vorbis",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						44,
+						45,
+						46,
+						47
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						10
+					],
+					"name" : "Opus",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						30,
+						38,
+						39,
+						40,
+						41,
+						42
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						11
+					],
+					"name" : "OpusFile",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						31,
+						32
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "Continuous::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-Continuous-Debug-754ba8867fd6505be791.json",
+					"name" : "Continuous",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousBuild::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ContinuousBuild-Debug-beb5cb8b3d51163b52e7.json",
+					"name" : "ContinuousBuild",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousConfigure::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ContinuousConfigure-Debug-e5d2bfd0ebeb63fd7f00.json",
+					"name" : "ContinuousConfigure",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousCoverage::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ContinuousCoverage-Debug-3b56e1f1eb53422a71d7.json",
+					"name" : "ContinuousCoverage",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousMemCheck::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ContinuousMemCheck-Debug-1bb374cf97250a7d2778.json",
+					"name" : "ContinuousMemCheck",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousStart::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ContinuousStart-Debug-737f1238a2db4eb519f8.json",
+					"name" : "ContinuousStart",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousSubmit::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ContinuousSubmit-Debug-f55c2704d4ff8a7e2ddc.json",
+					"name" : "ContinuousSubmit",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousTest::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ContinuousTest-Debug-49ad3ed1858289b1b7c9.json",
+					"name" : "ContinuousTest",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousUpdate::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ContinuousUpdate-Debug-d31f5619d779e3c6bbfd.json",
+					"name" : "ContinuousUpdate",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "Experimental::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-Experimental-Debug-c1689b6718c06e874e17.json",
+					"name" : "Experimental",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalBuild::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ExperimentalBuild-Debug-8727818563fe382deac8.json",
+					"name" : "ExperimentalBuild",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalConfigure::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ExperimentalConfigure-Debug-9ddff6e4e501e2794303.json",
+					"name" : "ExperimentalConfigure",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalCoverage::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ExperimentalCoverage-Debug-40fe2a3366af3a24d272.json",
+					"name" : "ExperimentalCoverage",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalMemCheck::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ExperimentalMemCheck-Debug-34c5af502929d7fd8610.json",
+					"name" : "ExperimentalMemCheck",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalStart::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ExperimentalStart-Debug-263c78a6d188db6e0c8c.json",
+					"name" : "ExperimentalStart",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalSubmit::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ExperimentalSubmit-Debug-48935e7366d0d8cb9ac0.json",
+					"name" : "ExperimentalSubmit",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalTest::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ExperimentalTest-Debug-c29c0556ac9a886ad8e5.json",
+					"name" : "ExperimentalTest",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalUpdate::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-ExperimentalUpdate-Debug-eb05cc222ff729a30573.json",
+					"name" : "ExperimentalUpdate",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "Nightly::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-Nightly-Debug-603823957c7233997a7c.json",
+					"name" : "Nightly",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyBuild::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-NightlyBuild-Debug-73ba746eba5e6d7465a7.json",
+					"name" : "NightlyBuild",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyConfigure::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-NightlyConfigure-Debug-c37ca00acf20bf1b2c41.json",
+					"name" : "NightlyConfigure",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyCoverage::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-NightlyCoverage-Debug-b42f5ce93e3df29ef632.json",
+					"name" : "NightlyCoverage",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyMemCheck::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-NightlyMemCheck-Debug-e532199e6732c233a31d.json",
+					"name" : "NightlyMemCheck",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyMemoryCheck::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-NightlyMemoryCheck-Debug-dbdf379c1e2b46d11a59.json",
+					"name" : "NightlyMemoryCheck",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyStart::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-NightlyStart-Debug-37f24a569b5d4c7b8c07.json",
+					"name" : "NightlyStart",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlySubmit::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-NightlySubmit-Debug-90610b60f0e16f169d69.json",
+					"name" : "NightlySubmit",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyTest::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-NightlyTest-Debug-9d23aac87c28e727ff8b.json",
+					"name" : "NightlyTest",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyUpdate::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-NightlyUpdate-Debug-4eafe68ee741687db0a2.json",
+					"name" : "NightlyUpdate",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "docs::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-docs-Debug-1047e919cc9bde8e6173.json",
+					"name" : "docs",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "ogg::@9eaf6ae66da5c813ae51",
+					"jsonFile" : "target-ogg-Debug-96e0710a80dd41efc9f3.json",
+					"name" : "ogg",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 10,
+					"id" : "opus::@922c6de6b8c01038a208",
+					"jsonFile" : "target-opus-Debug-f372710de7b9abf9f473.json",
+					"name" : "opus",
+					"projectIndex" : 5
+				},
+				{
+					"directoryIndex" : 11,
+					"id" : "opusfile::@c4d67018860c8b252503",
+					"jsonFile" : "target-opusfile-Debug-d90140b0e778818ead52.json",
+					"name" : "opusfile",
+					"projectIndex" : 6
+				},
+				{
+					"directoryIndex" : 11,
+					"id" : "opusurl::@c4d67018860c8b252503",
+					"jsonFile" : "target-opusurl-Debug-0f6164c8f8bd2dbfb5c0.json",
+					"name" : "opusurl",
+					"projectIndex" : 6
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "tag::@05629c48e5653c2f7bf0",
+					"jsonFile" : "target-tag-Debug-5e16fa19be14825b415d.json",
+					"name" : "tag",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "tag_c::@9cdc347eb927be3a3816",
+					"jsonFile" : "target-tag_c-Debug-b54ed5b7f791771bb4a9.json",
+					"name" : "tag_c",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "taglib_jni::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-taglib_jni-Debug-43ef4ebe84be9c894096.json",
+					"name" : "taglib_jni",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "test_bitwise::@9eaf6ae66da5c813ae51",
+					"jsonFile" : "target-test_bitwise-Debug-714f285ec76737533dee.json",
+					"name" : "test_bitwise",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "test_framing::@9eaf6ae66da5c813ae51",
+					"jsonFile" : "target-test_framing-Debug-5a2baf8fcff8121faeb4.json",
+					"name" : "test_framing",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 10,
+					"id" : "test_opus_api::@922c6de6b8c01038a208",
+					"jsonFile" : "target-test_opus_api-Debug-d148452dec7a85cdf704.json",
+					"name" : "test_opus_api",
+					"projectIndex" : 5
+				},
+				{
+					"directoryIndex" : 10,
+					"id" : "test_opus_decode::@922c6de6b8c01038a208",
+					"jsonFile" : "target-test_opus_decode-Debug-a74d10f93c56f9b29115.json",
+					"name" : "test_opus_decode",
+					"projectIndex" : 5
+				},
+				{
+					"directoryIndex" : 10,
+					"id" : "test_opus_encode::@922c6de6b8c01038a208",
+					"jsonFile" : "target-test_opus_encode-Debug-ce051aaa7f4eebb9d78e.json",
+					"name" : "test_opus_encode",
+					"projectIndex" : 5
+				},
+				{
+					"directoryIndex" : 10,
+					"id" : "test_opus_extensions::@922c6de6b8c01038a208",
+					"jsonFile" : "target-test_opus_extensions-Debug-cb821329d3143bc1c2bb.json",
+					"name" : "test_opus_extensions",
+					"projectIndex" : 5
+				},
+				{
+					"directoryIndex" : 10,
+					"id" : "test_opus_padding::@922c6de6b8c01038a208",
+					"jsonFile" : "target-test_opus_padding-Debug-987938bd36711e3cf2ec.json",
+					"name" : "test_opus_padding",
+					"projectIndex" : 5
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "uninstall::@3616494f9d84e65b3f7f",
+					"jsonFile" : "target-uninstall-Debug-c12364f7e20f3217569e.json",
+					"name" : "uninstall",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "vorbis::@e56064d81dc67d40fb15",
+					"jsonFile" : "target-vorbis-Debug-01fb5f76847a7c5e44ac.json",
+					"name" : "vorbis",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "vorbis_test::@e9d11b628348289e3842",
+					"jsonFile" : "target-vorbis_test-Debug-b4db30e44720a3ed050c.json",
+					"name" : "vorbis_test",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "vorbisenc::@e56064d81dc67d40fb15",
+					"jsonFile" : "target-vorbisenc-Debug-b6726ae4886d9739fcab.json",
+					"name" : "vorbisenc",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "vorbisfile::@e56064d81dc67d40fb15",
+					"jsonFile" : "target-vorbisfile-Debug-f4eaad9f7b0a6f423f64.json",
+					"name" : "vorbisfile",
+					"projectIndex" : 4
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/storage/emulated/0/AndroidIDEProjects/AndroidTagLib/library/.cxx/Debug/6d6u3a5p/arm64-v8a",
+		"source" : "/storage/emulated/0/AndroidIDEProjects/AndroidTagLib/library"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 8
+	}
+}

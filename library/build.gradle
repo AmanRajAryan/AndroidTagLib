@@ -15,6 +15,7 @@ plugins {
 android {
     namespace 'aman.taglib'
     compileSdk 33
+    ndkVersion '29.0.14033849'
 
     defaultConfig {
         minSdk 23
@@ -27,7 +28,9 @@ android {
     }
 
     externalNativeBuild {
-        cmake { path "CMakeLists.txt" }
+        cmake { path "CMakeLists.txt" 
+        version '4.1.2'
+            }
     }
 
     compileOptions {

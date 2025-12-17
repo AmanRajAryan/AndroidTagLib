@@ -1,0 +1,128 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"jni/opusfile-0.12/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 86,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 189,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 288,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 304,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"jni/opusfile-0.12/libopusfile.a"
+			],
+			"targetId" : "opusfile::@c4d67018860c8b252503",
+			"targetIndex" : 31,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "include/opus",
+			"paths" : 
+			[
+				"jni/opusfile-0.12/include/opusfile.h"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"jni/opusfile-0.12/libopusurl.a"
+			],
+			"targetId" : "opusurl::@c4d67018860c8b252503",
+			"targetIndex" : 32,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "include/opus",
+			"paths" : 
+			[
+				"jni/opusfile-0.12/include/opusfile.h"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 3,
+			"component" : "Unspecified",
+			"destination" : "lib/cmake/opusfile",
+			"exportName" : "OpusFileTargets",
+			"exportTargets" : 
+			[
+				{
+					"id" : "opusfile::@c4d67018860c8b252503",
+					"index" : 31
+				},
+				{
+					"id" : "opusurl::@c4d67018860c8b252503",
+					"index" : 32
+				}
+			],
+			"paths" : 
+			[
+				"jni/opusfile-0.12/CMakeFiles/Export/5b4f1099bc6a6fc52dc0348a9c6b3f98/OpusFileTargets.cmake"
+			],
+			"type" : "export"
+		},
+		{
+			"backtrace" : 4,
+			"component" : "Unspecified",
+			"destination" : "lib/cmake/opusfile",
+			"paths" : 
+			[
+				".cxx/Debug/6d6u3a5p/arm64-v8a/jni/opusfile-0.12/OpusFileConfig.cmake",
+				".cxx/Debug/6d6u3a5p/arm64-v8a/jni/opusfile-0.12/OpusFileConfigVersion.cmake"
+			],
+			"type" : "file"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "jni/opusfile-0.12",
+		"source" : "jni/opusfile-0.12"
+	}
+}
