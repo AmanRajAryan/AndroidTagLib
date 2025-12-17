@@ -178,7 +178,7 @@ The `Metadata` class contains:
 
 ## License
 - TagLib: LGPL/MPL
-- AndroidTagLib JNI wrapper: Specify your license here
+- AndroidTagLib JNI wrapper: Free
 
 ## Support
 For issues or contributions, open an issue or pull request on GitHub.
