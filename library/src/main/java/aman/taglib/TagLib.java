@@ -18,26 +18,41 @@ public class TagLib {
     }
 
     /**
+     * The hidden C++ call. Returns a flat alternating array: [key1, val1, key2, val2, ...]
+     * Keeps all JNI reflection out of C++ — the native side just dumps strings over the wall.
+     */
+    private static native String[] getMetadataNative(String filePath);
+
+    /**
      * Returns all available metadata as a key-value map.
      * Supports: MP3, M4A, FLAC, WMA, WAV, AIFF, OGG, OPUS, APE.
-     * * Keys are standard TagLib uppercase tags (e.g., "TITLE", "ARTIST", "ALBUM").
+     * Keys are standard TagLib uppercase tags (e.g., "TITLE", "ARTIST", "ALBUM").
      * Format-specific keys (like "ENCODEDBY") are also available if present.
      */
-    public native HashMap<String, String> getMetadata(String filePath);
+    public static HashMap<String, String> getMetadata(String filePath) {
+        HashMap<String, String> map = new HashMap<>();
+        String[] rawData = getMetadataNative(filePath);
+        if (rawData != null) {
+            for (int i = 0; i < rawData.length - 1; i += 2) {
+                map.put(rawData[i], rawData[i + 1]);
+            }
+        }
+        return map;
+    }
 
     /**
      * Updates metadata for the file.
      * Note: Keys not present in the input map are preserved (merged).
      * To delete a tag, you may need to pass an empty string (implementation dependent).
      */
-    public native boolean setMetadata(String filePath, HashMap<String, String> metadata);
+    public static native boolean setMetadata(String filePath, HashMap<String, String> metadata);
     
     /**
      * Returns all artworks/cover art found in the audio file.
      * @param filePath Path to the audio file
      * @return Array of Artwork objects. Empty if none found.
      */
-    public native Artwork[] getArtwork(String filePath);
+    public static native Artwork[] getArtwork(String filePath);
     
     /**
      * Sets or replaces the Front Cover artwork.
@@ -52,7 +67,7 @@ public class TagLib {
      * @param description Optional description
      * @return true if successful
      */
-    public native boolean setArtwork(String filePath, byte[] imageData, String mimeType, String description);
+    public static native boolean setArtwork(String filePath, byte[] imageData, String mimeType, String description);
     
-    public native String getArtworkDebugInfo(String filePath);
+    public static native String getArtworkDebugInfo(String filePath);
 }

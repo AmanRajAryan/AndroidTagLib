@@ -1,0 +1,150 @@
+{
+  "modules": [
+    {
+      "name": "TagLib",
+      "type": "kotlin-jvm",
+      "contentRoots": [
+        {
+          "path": "/storage/emulated/0/AndroidIDEProjects/AndroidTagLib",
+          "excludedPatterns": [
+            "build/**",
+            ".gradle/**"
+          ],
+          "excludedUrls": [],
+          "sourceRoots": []
+        }
+      ],
+      "dependencies": [
+        {
+          "type": "library",
+          "name": "android-36",
+          "scope": "compile"
+        }
+      ]
+    },
+    {
+      "name": "library",
+      "type": "kotlin-android",
+      "contentRoots": [
+        {
+          "path": "/storage/emulated/0/AndroidIDEProjects/AndroidTagLib/library",
+          "excludedPatterns": [
+            "build/**",
+            ".gradle/**"
+          ],
+          "excludedUrls": [],
+          "sourceRoots": [
+            {
+              "path": "/storage/emulated/0/AndroidIDEProjects/AndroidTagLib/library/src/main/java",
+              "type": "java-source"
+            }
+          ]
+        },
+        {
+          "path": "/storage/emulated/0/AndroidIDEProjects/AndroidTagLib/library/build/generated/ap_generated_sources/debug/out",
+          "excludedPatterns": [],
+          "excludedUrls": [],
+          "sourceRoots": [
+            {
+              "path": "/storage/emulated/0/AndroidIDEProjects/AndroidTagLib/library/build/generated/ap_generated_sources/debug/out",
+              "type": "java-source"
+            }
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "type": "library",
+          "name": "android-36",
+          "scope": "compile"
+        },
+        {
+          "type": "library",
+          "name": "intermediates:compile_r_class_jar:debug:R",
+          "scope": "compile"
+        }
+      ]
+    }
+  ],
+  "libraries": [
+    {
+      "name": "android-36",
+      "type": null,
+      "roots": [
+        {
+          "path": "/home/Android/Sdk/platforms/android-36/android.jar",
+          "type": "CLASSES"
+        }
+      ]
+    },
+    {
+      "name": "intermediates:compile_r_class_jar:debug:R",
+      "type": null,
+      "roots": [
+        {
+          "path": "/storage/emulated/0/AndroidIDEProjects/AndroidTagLib/library/build/intermediates/compile_r_class_jar/debug/R.jar",
+          "type": "CLASSES"
+        }
+      ]
+    }
+  ],
+  "sdks": [],
+  "kotlinSettings": [
+    {
+      "name": "TagLib",
+      "module": "TagLib",
+      "useProjectSettings": false,
+      "sourceRoots": [],
+      "configFileItems": [],
+      "implementedModuleNames": [],
+      "dependsOnModuleNames": [],
+      "additionalVisibleModuleNames": [],
+      "productionOutputPath": null,
+      "testOutputPath": null,
+      "sourceSetNames": [],
+      "isTestModule": false,
+      "externalProjectId": "",
+      "isHmppEnabled": false,
+      "pureKotlinSourceFolders": [],
+      "kind": "default",
+      "compilerArguments": "J{\"pluginClasspaths\":[\"/home/acslab/lsp/kotlin/lib/kotlin-compose-compiler-plugin-embeddable-2.3.0.jar\"]}",
+      "additionalArguments": null,
+      "scriptTemplates": null,
+      "scriptTemplatesClasspath": null,
+      "copyJsLibraryFiles": false,
+      "outputDirectoryForJsLibraryFiles": null,
+      "targetPlatform": null,
+      "externalSystemRunTasks": [],
+      "version": 1,
+      "flushNeeded": false
+    },
+    {
+      "name": "library",
+      "module": "library",
+      "useProjectSettings": false,
+      "sourceRoots": [],
+      "configFileItems": [],
+      "implementedModuleNames": [],
+      "dependsOnModuleNames": [],
+      "additionalVisibleModuleNames": [],
+      "productionOutputPath": null,
+      "testOutputPath": null,
+      "sourceSetNames": [],
+      "isTestModule": false,
+      "externalProjectId": "",
+      "isHmppEnabled": false,
+      "pureKotlinSourceFolders": [],
+      "kind": "default",
+      "compilerArguments": "J{\"pluginClasspaths\":[\"/home/acslab/lsp/kotlin/lib/kotlin-compose-compiler-plugin-embeddable-2.3.0.jar\"]}",
+      "additionalArguments": null,
+      "scriptTemplates": null,
+      "scriptTemplatesClasspath": null,
+      "copyJsLibraryFiles": false,
+      "outputDirectoryForJsLibraryFiles": null,
+      "targetPlatform": null,
+      "externalSystemRunTasks": [],
+      "version": 1,
+      "flushNeeded": false
+    }
+  ]
+}

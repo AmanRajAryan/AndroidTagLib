@@ -3,4 +3,7 @@ library/.cxx
 !library/build/outputs/
 android-sdk/
 cmdline-tools.zip
+.gradle/
+.acside/
+**/*/build
 
