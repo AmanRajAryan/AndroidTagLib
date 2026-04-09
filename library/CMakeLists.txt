@@ -4,7 +4,6 @@ project(TagLibJNI)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# --- FIX: DISABLE GIT DETECTION ---
 set(CMAKE_DISABLE_FIND_PACKAGE_Git TRUE)
 set(GIT_EXECUTABLE "FALSE" CACHE FILEPATH "Force disable git" FORCE)
 set(Git_FOUND FALSE CACHE BOOL "Force disable git" FORCE)
@@ -12,7 +11,6 @@ set(Git_FOUND FALSE CACHE BOOL "Force disable git" FORCE)
 set(OP_GIT_VERSION "0.12" CACHE STRING "Force opusfile version" FORCE)
 set(OP_GIT_TAG "v0.12" CACHE STRING "Force opusfile tag" FORCE)
 set(PACKAGE_VERSION "0.12" CACHE STRING "Force package version" FORCE)
-# ----------------------------------
 
 add_subdirectory(taglib)
 add_subdirectory(jni/libogg-1.3.5)
@@ -24,13 +22,9 @@ add_library(taglib_jni SHARED jni/TagLibJNI.cpp)
 find_library(log-lib log)
 
 target_include_directories(taglib_jni PRIVATE
-    # Production Grade: MP4/M4A support
     ${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/mp4
-    
-    # --- ADDED THESE MISSING PATHS ---
     ${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/riff/wav
     ${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/riff/aiff
-    # ---------------------------------
 
     ${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/ogg
     ${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/ogg/opus
