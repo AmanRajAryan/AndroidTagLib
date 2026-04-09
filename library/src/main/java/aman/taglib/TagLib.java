@@ -17,10 +17,6 @@ public class TagLib {
         }
     }
 
-    /**
-     * The hidden C++ call. Returns a flat alternating array: [key1, val1, key2, val2, ...]
-     * Keeps all JNI reflection out of C++ — the native side just dumps strings over the wall.
-     */
     private static native String[] getMetadataNative(String filePath);
 
     /**
@@ -42,8 +38,7 @@ public class TagLib {
 
     /**
      * Updates metadata for the file.
-     * Note: Keys not present in the input map are preserved (merged).
-     * To delete a tag, you may need to pass an empty string (implementation dependent).
+     * Keys not present in the input map are preserved. Pass an empty string to delete a tag.
      */
     public static native boolean setMetadata(String filePath, HashMap<String, String> metadata);
     
@@ -56,12 +51,12 @@ public class TagLib {
     
     /**
      * Sets or replaces the Front Cover artwork.
-     * * Supported Behavior:
+     * Supported formats:
      * - MP3/WAV/AIFF: Replaces 'APIC' ID3v2 frame.
      * - M4A: Replaces 'covr' atom.
      * - FLAC/OGG: Replaces METADATA_BLOCK_PICTURE.
      * - WMA: Replaces 'WM/Picture' attribute.
-     * * @param filePath Path to the audio file
+     * @param filePath Path to the audio file
      * @param imageData Raw image data
      * @param mimeType MIME type (e.g. "image/jpeg", "image/png")
      * @param description Optional description

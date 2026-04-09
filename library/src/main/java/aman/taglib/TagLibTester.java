@@ -21,7 +21,6 @@ public class TagLibTester {
         new Thread(() -> {
             Log.d(TAG, "=== STARTING TAGLIB EXTENSIVE CHECKS ===");
             
-            // List of formats to test
             String[] formats = {"sample.mp3", "sample.m4a", "sample.flac", "sample.wav", "sample.ogg"};
             
             for (String filename : formats) {
@@ -44,7 +43,6 @@ public class TagLibTester {
 
         String path = file.getAbsolutePath();
 
-        // 1. READ INITIAL METADATA
         HashMap<String, String> meta = tagLib.getMetadata(path);
         Log.d(TAG, "[READ] Found " + (meta != null ? meta.size() : "null") + " tags.");
         if (meta != null) {
@@ -52,7 +50,6 @@ public class TagLibTester {
             Log.d(TAG, "   Type: " + meta.get("ARTIST"));
         }
 
-        // 2. WRITE NEW METADATA
         HashMap<String, String> newMeta = new HashMap<>();
         String testTitle = "Test Title " + System.currentTimeMillis();
         newMeta.put("TITLE", testTitle);
@@ -61,7 +58,6 @@ public class TagLibTester {
         boolean writeSuccess = tagLib.setMetadata(path, newMeta);
         Log.d(TAG, "[WRITE] Result: " + (writeSuccess ? "SUCCESS" : "FAILED"));
 
-        // 3. VERIFY WRITE
         HashMap<String, String> verifyMeta = tagLib.getMetadata(path);
         String readBackTitle = verifyMeta.get("TITLE");
         if (testTitle.equals(readBackTitle)) {
@@ -70,23 +66,14 @@ public class TagLibTester {
              Log.e(TAG, "[VERIFY] FAIL: Expected '" + testTitle + "' but got '" + readBackTitle + "'");
         }
 
-        // 4. ARTWORK CHECK
         TagLib.Artwork[] art = tagLib.getArtwork(path);
         Log.d(TAG, "[ARTWORK] Found " + (art != null ? art.length : "0") + " images.");
         
-        // Optional: Test setting artwork if you have a dummy image byte array
-        // byte[] dummyImage = ...; 
-        // tagLib.setArtwork(path, dummyImage, "image/jpeg", "Cover");
-
-        // 5. DEBUG INFO
         String debug = tagLib.getArtworkDebugInfo(path);
-        // Log.v(TAG, "[DEBUG] " + debug); // Uncomment for verbose logs
 
-        // Clean up
         file.delete();
     }
 
-    // Helper to copy file from Assets -> Internal Cache so C++ can read it
     private File copyAssetToCache(String fileName) {
         try {
             File file = new File(context.getCacheDir(), fileName);

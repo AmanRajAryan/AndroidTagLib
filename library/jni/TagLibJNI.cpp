@@ -3,7 +3,6 @@
 #include <vector>
 #include <map>
 
-// TagLib Core
 #include "fileref.h"
 #include "tag.h"
 #include "tpropertymap.h"
@@ -11,10 +10,8 @@
 #include "tbytevector.h"
 #include "tbytevectorlist.h"
 
-// Audio Properties
 #include "audioproperties.h"
 
-// Format Specific Headers
 #include "mpeg/id3v2/id3v2tag.h"
 #include "mpeg/id3v2/frames/attachedpictureframe.h"
 #include "mpeg/id3v2/frames/textidentificationframe.h" 
@@ -38,81 +35,47 @@
 
 extern "C" {
 
-// ============================================================================================
-// HELPER: Get Bit Depth (Audiophile Metric)
-// ============================================================================================
 int getBitDepth(TagLib::File* file) {
     if (!file) return 0;
 
-    // 1. FLAC (Explicit Bit Depth)
     if (auto *f = dynamic_cast<TagLib::FLAC::File*>(file)) {
         if (f->audioProperties()) return f->audioProperties()->bitsPerSample();
     }
-    
-    // 2. WAV (Explicit Bit Depth)
     else if (auto *f = dynamic_cast<TagLib::RIFF::WAV::File*>(file)) {
         if (f->audioProperties()) return f->audioProperties()->bitsPerSample();
     }
-
-    // 3. AIFF
     else if (auto *f = dynamic_cast<TagLib::RIFF::AIFF::File*>(file)) {
         if (f->audioProperties()) return f->audioProperties()->bitsPerSample();
     }
-    
-    // 4. APE (Monkey's Audio)
     else if (auto *f = dynamic_cast<TagLib::APE::File*>(file)) {
         if (f->audioProperties()) return f->audioProperties()->bitsPerSample();
     }
-
-    // 5. MP4 / M4A (The Tricky One)
     else if (auto *f = dynamic_cast<TagLib::MP4::File*>(file)) {
         if (f->audioProperties()) {
-            // ALAC (Lossless) will reliably report 16, 24, or 32.
-            // AAC (Lossy) typically reports 0.
             return f->audioProperties()->bitsPerSample();
         }
     }
 
-    return 0; // 0 means "Unknown" or "Not Applicable" (like MP3)
+    return 0;
 }
 
-// ============================================================================================
-// HELPER: Detect Detailed Codec Name (AAC vs ALAC, etc)
-// ============================================================================================
 const char* getCodecName(TagLib::File* file) {
     if (!file) return "";
 
-    // 1. MP3
     if (dynamic_cast<TagLib::MPEG::File*>(file)) return "MP3";
-    
-    // 2. FLAC
     if (dynamic_cast<TagLib::FLAC::File*>(file)) return "FLAC";
-    
-    // 3. OGG Vorbis
     if (dynamic_cast<TagLib::Ogg::Vorbis::File*>(file)) return "Vorbis";
-
-    // 4. OPUS
     if (dynamic_cast<TagLib::Ogg::Opus::File*>(file)) return "Opus";
-
-    // 5. WAV
     if (dynamic_cast<TagLib::RIFF::WAV::File*>(file)) return "WAV";
-    
-    // 6. AIFF
     if (dynamic_cast<TagLib::RIFF::AIFF::File*>(file)) return "AIFF";
-
-    // 7. APE
     if (dynamic_cast<TagLib::APE::File*>(file)) return "APE";
-
-    // 8. WMA
     if (dynamic_cast<TagLib::ASF::File*>(file)) return "WMA";
 
-    // 9. MP4 (Smart Check)
     if (auto *mp4 = dynamic_cast<TagLib::MP4::File*>(file)) {
         if (mp4->audioProperties()) {
-            // If bit depth is present (>0), it is almost certainly ALAC (Apple Lossless)
             if (mp4->audioProperties()->bitsPerSample() > 0) return "ALAC";
         }
-        return "AAC"; // Default for M4A
+        return "AAC";
     }
 
     return ""; 
@@ -126,14 +89,12 @@ jobject createArtworkObject(JNIEnv *env, jbyteArray data, const char* mimeTypeSt
     jstring jMime = env->NewStringUTF(mimeTypeStr ? mimeTypeStr : "");
     jstring jDesc = env->NewStringUTF(descStr ? descStr : "");
     jobject obj = env->NewObject(artworkClass, constructor, data, jMime, jDesc);
-    // FIXED: Clean up all local refs — jMime, jDesc, and artworkClass are no longer needed
     env->DeleteLocalRef(jMime);
     env->DeleteLocalRef(jDesc);
     env->DeleteLocalRef(artworkClass);
     return obj;
 }
 
-// --- HELPER: Appends a key/value pair to the flat output vector ---
 void addTag(std::vector<std::string>& vec, const std::string& key, const std::string& val) {
     if (!key.empty() && !val.empty()) {
         vec.push_back(key);
@@ -141,9 +102,7 @@ void addTag(std::vector<std::string>& vec, const std::string& key, const std::st
     }
 }
 
-// --- READ HELPER: Extracts non-standard/binary tags ---
 void fetchExtraTags(TagLib::File* f, std::vector<std::string>& tags) {
-    // 1. MP4/M4A: Explicit Rating (Binary Atom 'rtng')
     if (auto *mp4 = dynamic_cast<TagLib::MP4::File*>(f)) {
         if (mp4->tag() && mp4->tag()->itemMap().contains("rtng")) {
             TagLib::MP4::Item item = mp4->tag()->itemMap()["rtng"];
@@ -159,7 +118,6 @@ void fetchExtraTags(TagLib::File* f, std::vector<std::string>& tags) {
             }
         }
     }
-    // 2. MP3: Common "Itunes Advisory"
     else if (auto *mp3 = dynamic_cast<TagLib::MPEG::File*>(f)) {
         if (mp3->ID3v2Tag()) {
             const TagLib::ID3v2::FrameList &frames = mp3->ID3v2Tag()->frameList("TXXX");
@@ -176,14 +134,12 @@ void fetchExtraTags(TagLib::File* f, std::vector<std::string>& tags) {
     }
 }
 
-// --- WRITE HELPER: Writes binary/standard atoms for compatibility ---
 void saveExtraTags(TagLib::File* f, const std::string& key, const std::string& value) {
     if (key != "CONTENT_RATING") return;
 
     int ratingVal = 0;
-    try { ratingVal = std::stoi(value); } catch (...) { return; } // Safety check
+    try { ratingVal = std::stoi(value); } catch (...) { return; }
 
-    // 1. MP4/M4A: Write 'rtng' atom (Integer)
     if (auto *mp4 = dynamic_cast<TagLib::MP4::File*>(f)) {
         if (mp4->tag()) {
             TagLib::MP4::Item item(ratingVal);
@@ -191,7 +147,6 @@ void saveExtraTags(TagLib::File* f, const std::string& key, const std::string& v
         }
     }
     
-    // 2. MP3: Write 'ITUNESADVISORY' TXXX frame
     else if (auto *mp3 = dynamic_cast<TagLib::MPEG::File*>(f)) {
         if (mp3->ID3v2Tag()) {
             TagLib::ID3v2::Tag *tag = mp3->ID3v2Tag();
@@ -206,15 +161,12 @@ void saveExtraTags(TagLib::File* f, const std::string& key, const std::string& v
             
             auto *frame = new TagLib::ID3v2::UserTextIdentificationFrame();
             frame->setDescription("ITUNESADVISORY");
-            frame->setText(value); // "1" or "2"
+            frame->setText(value);
             tag->addFrame(frame);
         }
     }
 }
 
-// ============================================================================================
-// GET METADATA NATIVE (Returns flat String[] — zero JNI reflection in C++)
-// ============================================================================================
 JNIEXPORT jobjectArray JNICALL Java_aman_taglib_TagLib_getMetadataNative(JNIEnv* env, jclass /*clazz*/, jstring filePath) {
     const char* pathChars = env->GetStringUTFChars(filePath, nullptr);
     TagLib::FileRef f(pathChars);
@@ -260,7 +212,6 @@ JNIEXPORT jobjectArray JNICALL Java_aman_taglib_TagLib_getMetadataNative(JNIEnv*
         fetchExtraTags(f.file(), tags);
     }
 
-    // Single JNI crossing: pack the vector into a Java String[]
     jclass stringClass = env->FindClass("java/lang/String");
     jobjectArray result = env->NewObjectArray(tags.size(), stringClass, nullptr);
     env->DeleteLocalRef(stringClass);
@@ -320,7 +271,6 @@ Java_aman_taglib_TagLib_setMetadata(JNIEnv *env, jclass /*clazz*/, jstring jFile
 
         env->ReleaseStringUTFChars(keyStr, keyC);
         env->ReleaseStringUTFChars(valStr, valC);
-        // FIXED: Delete the jstring object refs themselves, not just their chars
         env->DeleteLocalRef(keyStr);
         env->DeleteLocalRef(valStr);
         env->DeleteLocalRef(entryObj);
@@ -352,7 +302,7 @@ Java_aman_taglib_TagLib_getArtwork(JNIEnv *env, jclass /*clazz*/, jstring jFileP
                 env->SetByteArrayRegion(jData, 0, data.size(), reinterpret_cast<const jbyte*>(data.data()));
                 const char* mime = (cover.format() == TagLib::MP4::CoverArt::PNG) ? "image/png" : "image/jpeg";
                 artworks.push_back(createArtworkObject(env, jData, mime, ""));
-                env->DeleteLocalRef(jData); // FIXED: release the large byte array ref immediately
+                env->DeleteLocalRef(jData);
             }
         }
     }
@@ -366,7 +316,7 @@ Java_aman_taglib_TagLib_getArtwork(JNIEnv *env, jclass /*clazz*/, jstring jFileP
                    jbyteArray jData = env->NewByteArray(data.size());
                    env->SetByteArrayRegion(jData, 0, data.size(), reinterpret_cast<const jbyte*>(data.data()));
                    artworks.push_back(createArtworkObject(env, jData, pic.mimeType().toCString(true), pic.description().toCString(true)));
-                   env->DeleteLocalRef(jData); // FIXED
+                   env->DeleteLocalRef(jData);
                 }
             }
         }
@@ -379,7 +329,7 @@ Java_aman_taglib_TagLib_getArtwork(JNIEnv *env, jclass /*clazz*/, jstring jFileP
                 jbyteArray jData = env->NewByteArray(pic->picture().size());
                 env->SetByteArrayRegion(jData, 0, pic->picture().size(), reinterpret_cast<const jbyte*>(pic->picture().data()));
                 artworks.push_back(createArtworkObject(env, jData, pic->mimeType().toCString(true), pic->description().toCString(true)));
-                env->DeleteLocalRef(jData); // FIXED
+                env->DeleteLocalRef(jData);
             }
         }
     }
@@ -388,7 +338,7 @@ Java_aman_taglib_TagLib_getArtwork(JNIEnv *env, jclass /*clazz*/, jstring jFileP
              jbyteArray jData = env->NewByteArray(pic->data().size());
              env->SetByteArrayRegion(jData, 0, pic->data().size(), reinterpret_cast<const jbyte*>(pic->data().data()));
              artworks.push_back(createArtworkObject(env, jData, pic->mimeType().toCString(true), pic->description().toCString(true)));
-             env->DeleteLocalRef(jData); // FIXED
+             env->DeleteLocalRef(jData);
         }
     }
     else if (TagLib::Ogg::XiphComment *xiphTag = dynamic_cast<TagLib::Ogg::XiphComment*>(f.tag())) {
@@ -396,7 +346,7 @@ Java_aman_taglib_TagLib_getArtwork(JNIEnv *env, jclass /*clazz*/, jstring jFileP
              jbyteArray jData = env->NewByteArray(pic->data().size());
              env->SetByteArrayRegion(jData, 0, pic->data().size(), reinterpret_cast<const jbyte*>(pic->data().data()));
              artworks.push_back(createArtworkObject(env, jData, pic->mimeType().toCString(true), pic->description().toCString(true)));
-             env->DeleteLocalRef(jData); // FIXED
+             env->DeleteLocalRef(jData);
          }
     }
     else {
@@ -410,17 +360,17 @@ Java_aman_taglib_TagLib_getArtwork(JNIEnv *env, jclass /*clazz*/, jstring jFileP
                 jbyteArray jData = env->NewByteArray(pic->picture().size());
                 env->SetByteArrayRegion(jData, 0, pic->picture().size(), reinterpret_cast<const jbyte*>(pic->picture().data()));
                 artworks.push_back(createArtworkObject(env, jData, pic->mimeType().toCString(true), pic->description().toCString(true)));
-                env->DeleteLocalRef(jData); // FIXED
+                env->DeleteLocalRef(jData);
             }
         }
     }
     
     jclass artworkClass = env->FindClass("aman/taglib/TagLib$Artwork");
     jobjectArray result = env->NewObjectArray(artworks.size(), artworkClass, nullptr);
-    env->DeleteLocalRef(artworkClass); // FIXED: class ref no longer needed after array is created
+    env->DeleteLocalRef(artworkClass);
     for (size_t i = 0; i < artworks.size(); ++i) {
         env->SetObjectArrayElement(result, i, artworks[i]);
-        env->DeleteLocalRef(artworks[i]); // FIXED: element ref no longer needed after it's in the array
+        env->DeleteLocalRef(artworks[i]);
     }
     return result;
 }
