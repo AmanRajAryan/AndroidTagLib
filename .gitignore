@@ -6,4 +6,4 @@ cmdline-tools.zip
 .gradle/
 .acside/
 **/*/build
-
+build/
