@@ -1,0 +1,98 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "io.github.amanrajaryan",
+    "module": "TagLib",
+    "version": "1.0.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.14.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "TagLib-1.0.0.aar",
+          "url": "TagLib-1.0.0.aar",
+          "size": 631710,
+          "sha512": "94eab212aa6a699941012420a822f3c2d66d57b82bab56461d69e1cad02d3f3e7c87d7e28cfa426c2053e4ec5c7438eb9c31f322e7122194c0204f2904c5274f",
+          "sha256": "f794190f5cc77ef4c4a49a22de6abe92b98a9cfde9e58a2e4ef3470f8c1e29fd",
+          "sha1": "90f5be189573714d76f2d49b00ae3009c507523c",
+          "md5": "001a0bfd50499c5ff9631fa6112b6e79"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "TagLib-1.0.0.aar",
+          "url": "TagLib-1.0.0.aar",
+          "size": 631710,
+          "sha512": "94eab212aa6a699941012420a822f3c2d66d57b82bab56461d69e1cad02d3f3e7c87d7e28cfa426c2053e4ec5c7438eb9c31f322e7122194c0204f2904c5274f",
+          "sha256": "f794190f5cc77ef4c4a49a22de6abe92b98a9cfde9e58a2e4ef3470f8c1e29fd",
+          "sha1": "90f5be189573714d76f2d49b00ae3009c507523c",
+          "md5": "001a0bfd50499c5ff9631fa6112b6e79"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseSourcePublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "TagLib-1.0.0-sources.jar",
+          "url": "TagLib-1.0.0-sources.jar",
+          "size": 2807,
+          "sha512": "e40c9b4b064ce8f384f7c46ec26d92ea2eea8d5806f3440552249a50aaacdca92422619923cd0642368968f7d23d4ec0121e0eecff6c0398e0d57cdb76708ff3",
+          "sha256": "23168977aaf488cad7a4bd76c7073b8c85371649de7372c90b69c21d5ddebdd3",
+          "sha1": "f949e0441e2818efde1b3f9c3a462ceac6fc8e92",
+          "md5": "b29791793a2e808d3f552b1b4a60c466"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseJavaDocPublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "TagLib-1.0.0-javadoc.jar",
+          "url": "TagLib-1.0.0-javadoc.jar",
+          "size": 271464,
+          "sha512": "2af6cfb83ccb9cab4c7462b273a56c3dc25b4f17a1ba54dd4b57c22a8f97a781df0eec663ab1f0528ff7e910cb63b111e5cb8bb2601609877f38ff42d47df83b",
+          "sha256": "a1c3f87389359b7372f3fa5fb02c4f6ba82098a4e32007e83897271589ea50ae",
+          "sha1": "62ba358f57689793a6b6ae8b58289f630c460238",
+          "md5": "8c571b5f5368854ad5f580130c5a1da5"
+        }
+      ]
+    }
+  ]
+}

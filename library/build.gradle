@@ -50,7 +50,31 @@ mavenPublishing {
 
     pom {
         name.set("TagLib")
-        description.set("amazing new tag library.")
-        // ... (Copy standard developers/licenses/scm blocks from LyricsView)
+        description.set("A tag library for Android.")
+        inceptionYear.set("2026")
+        url.set("https://github.com/AmanRajAryan/AndroidTagLib") 
+
+        licenses {
+            license {
+                name.set("The Apache License, Version 2.0")
+                url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                distribution.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+            }
+        }
+        developers {
+            developer {
+                id.set("AmanRajAryan") 
+                name.set("Aman Raj Aryan")
+                url.set("https://github.com/AmanRajAryan")
+            }
+        }
+        scm {
+            url.set("https://github.com/AmanRajAryan/AndroidTagLib")
+            connection.set("scm:git:git://github.com/AmanRajAryan/AndroidTagLib.git")
+            developerConnection.set("scm:git:ssh://git@github.com/AmanRajAryan/AndroidTagLib.git")
+        }
     }
+
+    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
 }

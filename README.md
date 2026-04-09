@@ -1,184 +1,40 @@
+# AndroidTagLib
 
+An Android library providing JNI bindings for TagLib — read and write audio metadata across all major formats.
 
+## Installation
 
-# AndroidTagLib Documentation
-
-## Overview
-AndroidTagLib is an Android library that provides JNI bindings for the TagLib audio metadata library. It allows Android apps to read and write metadata (tags) in audio files using native TagLib code.
-
-## Features
-- JNI wrapper for TagLib
-- Buildable as an AAR for easy integration
-- Uses CMake for native code
-- Compatible with OpenJDK 17 and Android Gradle Plugin
-- TagLib included as a git submodule
-- **Read and write all metadata fields, including custom fields (e.g., LYRICS, contentRating)**
-- **Full support for .opus files and all major formats**
-- **Get audio properties: bitrate, sample rate, channels, length, codec, etc. via getMetadata(String filePath)**
-
-## Project Structure
-```
-AndroidTagLib/
-├── build.gradle           # Top-level Gradle build file
-├── settings.gradle        # Gradle settings
-├── local.properties       # Android SDK location
-├── library/               # Android library module
-│   ├── build.gradle       # Module build file
-│   ├── CMakeLists.txt     # JNI and native build config
-│   ├── jni/               # JNI C++ sources
-│   ├── src/main/java/     # Java wrapper classes
-│   └── taglib/            # TagLib submodule
-```
-
-## Building the AAR
-1. **Install Prerequisites:**
-    - OpenJDK 17
-    - [Android SDK](https://developer.android.com/studio) (not included in this repo)
-    - [Android NDK](https://developer.android.com/ndk) (not included in this repo)
-    - [CMake](https://cmake.org/)
-
-2. **Set Up SDK/NDK:**
-    - Download and install the Android SDK and NDK separately.
-    - Set the SDK path in `local.properties`:
-      ```
-      sdk.dir=/path/to/your/android-sdk
-      ndk.dir=/path/to/your/android-ndk
-      ```
-    - Do **not** clone or expect SDK/NDK files in this repository. They must be installed on your system.
-
-3. **Set JAVA_HOME:**
-    ```bash
-    export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-    ```
-
-4. **Build the AAR:**
-    ```bash
-    ./gradlew :library:assembleRelease
-    ```
-
-5. The AAR will be generated at:
-    `library/build/outputs/aar/library-release.aar`
-
-## Using the AAR in Your App
-- Add the AAR to your app's `libs/` directory.
-- Use the Java wrapper classes to access TagLib features.
-
-## How to Use the AAR and Its Methods
-
-### 1. Import the AAR
-Copy `library-release.aar` to your app's `libs/` directory. In your app-level `build.gradle`, add:
 ```gradle
 dependencies {
-    implementation files('libs/library-release.aar')
+    implementation("io.github.amanrajaryan:TagLib:1.0.0")
 }
 ```
 
-### 2. Load the JNI Library
-The JNI library is loaded automatically by the static block in `TagLib`. Make sure the native `.so` files are included in your APK (handled by Gradle if built correctly).
+## Quick Start
 
-### 3. Access Metadata
-Use the `TagLib` class to read and write audio metadata.
-
-#### Example: Read Metadata (All Properties)
 ```java
-import aman.taglib.TagLib;
-import java.util.HashMap;
+// Read
+HashMap<String, String> metadata = TagLib.getMetadata("/sdcard/Music/song.mp3");
+String title = metadata.get("TITLE");
+String codec = metadata.get("FORMAT");
 
-String filePath = "/sdcard/Music/song.mp3";
-HashMap<String, String> metadata = new TagLib().getMetadata(filePath);
-System.out.println("Title: " + metadata.get("TITLE"));
-System.out.println("Bitrate: " + metadata.get("BITRATE"));
-System.out.println("Sample Rate: " + metadata.get("SAMPLERATE"));
-System.out.println("Channels: " + metadata.get("CHANNELS"));
-System.out.println("Length: " + metadata.get("LENGTH"));
-System.out.println("Codec: " + metadata.get("CODEC"));
-System.out.println("LYRICS: " + metadata.get("LYRICS"));
-// ...print other fields as needed
-```
-
-#### Example: Write Metadata (Standard and Custom Fields)
-```java
-import aman.taglib.TagLib;
-import java.util.HashMap;
-
-String filePath = "/sdcard/Music/song.opus"; // .opus supported
+// Write
 HashMap<String, String> meta = new HashMap<>();
-meta.put("TITLE", "My Opus Song");
+meta.put("TITLE", "My Song");
 meta.put("ARTIST", "Artist Name");
-meta.put("LYRICS", "These are the lyrics"); // Custom field
-meta.put("contentRating", "PG-13"); // Another custom field
-boolean success = new TagLib().setMetadata(filePath, meta);
-if (success) {
-    System.out.println("Metadata updated successfully.");
-} else {
-    System.out.println("Failed to update metadata.");
-}
-```
-- Only fields present in the map are changed/added; all other metadata remains untouched.
-- Custom fields (like `LYRICS`) are supported for .opus, .flac, .ogg, etc.
+TagLib.setMetadata("/sdcard/Music/song.mp3", meta);
 
-### 4. Get All Metadata (Key-Value Map)
-You can retrieve all available metadata (including custom tags, extended properties, and all fields TagLib supports) using the `getMetadata` method:
-
-```java
-import aman.taglib.TagLib;
-import java.util.HashMap;
-
-String filePath = "/sdcard/Music/song.mp3";
-HashMap<String, String> allMeta = new TagLib().getMetadata(filePath);
-for (String key : allMeta.keySet()) {
-    System.out.println(key + ": " + allMeta.get(key));
-}
+// Artwork
+TagLib.Artwork[] art = TagLib.getArtwork("/sdcard/Music/song.mp3");
+TagLib.setArtwork("/sdcard/Music/song.mp3", imageBytes, "image/jpeg", "");
 ```
 
-This will print all standard and extended metadata for MP3, FLAC, OGG, OPUS, and other supported formats. The keys are tag names or frame IDs, and the values are their string representations.
+## Supported Formats
+MP3, M4A (AAC/ALAC), FLAC, OGG, OPUS, WAV, AIFF, WMA, APE
 
-#### Supported Formats
-- MP3 (ID3v2 frames)
-- FLAC (Vorbis comments)
-- OGG (Vorbis comments)
-- OPUS (Opus tags, including custom fields)
-- More formats can be added as needed (MPC, APE, ASF, etc.)
-
-#### Notes
-- For MP3 files, all ID3v2 frames are included.
-- For FLAC, OGG, OPUS, all Vorbis comments and properties are included.
-- The returned map may contain both standard and custom fields.
-- You can use this method to inspect all metadata TagLib can extract from a file.
-
-### 5. Method Explanations
-- `getMetadata(String filePath)`: Reads metadata from the specified audio file. Returns a `Metadata` object with fields populated.
-- `setMetadata(String filePath, Metadata metadata)`: Writes the provided metadata to the audio file. Returns `true` if successful, `false` otherwise.
-
-### 6. Metadata Fields
-The `Metadata` class contains:
-- `title`: Song title
-- `artist`: Artist name
-- `album`: Album name
-- `genre`: Genre
-- `trackNumber`: Track number
-- `date`: Year or date
-- `comment`: Additional comments
-
-### 7. Notes
-- Supported formats depend on TagLib (MP3, FLAC, OGG, etc.).
-- File paths must be accessible and writable for metadata updates.
-- JNI errors will throw exceptions if the native library is missing or incompatible.
-
-## TagLib Submodule
-- TagLib is included as a submodule in `library/taglib`.
-- To initialize:
-  ```bash
-  git submodule update --init --recursive
-  ```
-
-## Compatibility
-- Tested with OpenJDK 17
-- Compatible with Android Gradle Plugin 8+
+## Documentation
+See [DOCUMENTATION.md](DOCUMENTATION.md) for the full API reference, all metadata keys, format-specific behavior, and build instructions.
 
 ## License
 - TagLib: LGPL/MPL
 - AndroidTagLib JNI wrapper: Free
-
-## Support
-For issues or contributions, open an issue or pull request on GitHub.
