@@ -4,19 +4,18 @@ project(TagLibJNI)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_DISABLE_FIND_PACKAGE_Git TRUE)
-set(GIT_EXECUTABLE "FALSE" CACHE FILEPATH "Force disable git" FORCE)
-set(Git_FOUND FALSE CACHE BOOL "Force disable git" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(BUILD_BINDINGS OFF CACHE BOOL "" FORCE)
+set(VISIBILITY_HIDDEN ON CACHE BOOL "" FORCE)
 
-set(OP_GIT_VERSION "0.12" CACHE STRING "Force opusfile version" FORCE)
-set(OP_GIT_TAG "v0.12" CACHE STRING "Force opusfile tag" FORCE)
-set(PACKAGE_VERSION "0.12" CACHE STRING "Force package version" FORCE)
+set(WITH_MOD OFF CACHE BOOL "Build with Tracker modules" FORCE)
+set(WITH_SHORTEN OFF CACHE BOOL "Build with Shorten" FORCE)
+set(WITH_TRUEAUDIO OFF CACHE BOOL "Build with TrueAudio" FORCE)
+set(WITH_DSF OFF CACHE BOOL "Build with DSF" FORCE)
 
 add_subdirectory(taglib)
-add_subdirectory(jni/libogg-1.3.5)
-add_subdirectory(jni/libvorbis-1.3.7)
-add_subdirectory(jni/opus-1.3.1)
-add_subdirectory(jni/opusfile-0.12)
 
 add_library(taglib_jni SHARED jni/TagLibJNI.cpp)
 find_library(log-lib log)
@@ -25,7 +24,6 @@ target_include_directories(taglib_jni PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/mp4
     ${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/riff/wav
     ${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/riff/aiff
-
     ${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/ogg
     ${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/ogg/opus
     ${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/ogg/vorbis
@@ -44,12 +42,7 @@ target_include_directories(taglib_jni PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/wavpack
     ${CMAKE_CURRENT_SOURCE_DIR}/taglib/taglib/shorten
     ${CMAKE_CURRENT_BINARY_DIR}/taglib/taglib
-    ${CMAKE_CURRENT_SOURCE_DIR}/jni/libvorbis-1.3.7/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/jni/libvorbis-1.3.7/include/vorbis
-    ${CMAKE_CURRENT_BINARY_DIR}/jni/libvorbis-1.3.7/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/jni/libogg-1.3.5/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/jni/opus-1.3.1/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/jni/opusfile-0.12/include
 )
 
-target_link_libraries(taglib_jni ${log-lib} tag vorbisfile Ogg::ogg opus opusfile)
+target_link_libraries(taglib_jni ${log-lib} tag)
+target_link_options(taglib_jni PRIVATE -Wl,--gc-sections -Wl,--exclude-libs,ALL)

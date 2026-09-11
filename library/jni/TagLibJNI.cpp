@@ -175,6 +175,7 @@ JNIEXPORT jobjectArray JNICALL Java_aman_taglib_TagLib_getMetadataNative(JNIEnv*
     if (f.isNull() || !f.file()) return nullptr;
 
     std::vector<std::string> tags;
+    tags.reserve(32);
 
     {
         TagLib::PropertyMap properties = f.file()->properties();
@@ -224,7 +225,8 @@ JNIEXPORT jobjectArray JNICALL Java_aman_taglib_TagLib_getMetadataNative(JNIEnv*
 }
 
 JNIEXPORT jboolean JNICALL
-Java_aman_taglib_TagLib_setMetadata(JNIEnv *env, jclass /*clazz*/, jstring jFilePath, jobject jMetadataMap) {
+Java_aman_taglib_TagLib_setMetadataNative(JNIEnv *env, jclass /*clazz*/, jstring jFilePath, jobjectArray jRawData) {
+    if (!jFilePath || !jRawData) return JNI_FALSE;
     const char *filePath = env->GetStringUTFChars(jFilePath, nullptr);
     if (!filePath) return JNI_FALSE;
     TagLib::FileRef f(filePath);
@@ -235,45 +237,36 @@ Java_aman_taglib_TagLib_setMetadata(JNIEnv *env, jclass /*clazz*/, jstring jFile
     }
 
     TagLib::PropertyMap fileProps = f.file()->properties();
-    
-    jclass mapClass = env->GetObjectClass(jMetadataMap);
-    jmethodID entrySet = env->GetMethodID(mapClass, "entrySet", "()Ljava/util/Set;");
-    jobject setObj = env->CallObjectMethod(jMetadataMap, entrySet);
-    jclass setClass = env->GetObjectClass(setObj);
-    jmethodID iterator = env->GetMethodID(setClass, "iterator", "()Ljava/util/Iterator;");
-    jobject iterObj = env->CallObjectMethod(setObj, iterator);
-    jclass iterClass = env->GetObjectClass(iterObj);
-    jmethodID hasNext = env->GetMethodID(iterClass, "hasNext", "()Z");
-    jmethodID next = env->GetMethodID(iterClass, "next", "()Ljava/lang/Object;");
+    jsize len = env->GetArrayLength(jRawData);
 
-    while (env->CallBooleanMethod(iterObj, hasNext)) {
-        jobject entryObj = env->CallObjectMethod(iterObj, next);
-        jclass entryClass = env->GetObjectClass(entryObj);
-        jmethodID getKey = env->GetMethodID(entryClass, "getKey", "()Ljava/lang/Object;");
-        jmethodID getValue = env->GetMethodID(entryClass, "getValue", "()Ljava/lang/Object;");
+    for (jsize i = 0; i + 1 < len; i += 2) {
+        jstring keyStr = (jstring)env->GetObjectArrayElement(jRawData, i);
+        jstring valStr = (jstring)env->GetObjectArrayElement(jRawData, i + 1);
+        if (!keyStr) continue;
 
-        jstring keyStr = (jstring)env->CallObjectMethod(entryObj, getKey);
-        jstring valStr = (jstring)env->CallObjectMethod(entryObj, getValue);
-        
         const char *keyC = env->GetStringUTFChars(keyStr, nullptr);
-        const char *valC = env->GetStringUTFChars(valStr, nullptr);
+        const char *valC = valStr ? env->GetStringUTFChars(valStr, nullptr) : "";
 
-        TagLib::String tKey(keyC, TagLib::String::UTF8);
-        TagLib::String tVal(valC, TagLib::String::UTF8);
+        if (keyC) {
+            TagLib::String tKey(keyC, TagLib::String::UTF8);
+            TagLib::String tVal(valC, TagLib::String::UTF8);
 
-        if (tVal.isEmpty()) {
-            fileProps.erase(tKey);
-        } else {
-            fileProps.replace(tKey, tVal);
+            if (tVal.isEmpty()) {
+                fileProps.erase(tKey);
+            } else {
+                fileProps.replace(tKey, tVal);
+            }
+
+            saveExtraTags(f.file(), std::string(keyC), std::string(valC));
+            env->ReleaseStringUTFChars(keyStr, keyC);
         }
 
-        saveExtraTags(f.file(), std::string(keyC), std::string(valC));
+        if (valStr && valC && *valC) {
+            env->ReleaseStringUTFChars(valStr, valC);
+        }
 
-        env->ReleaseStringUTFChars(keyStr, keyC);
-        env->ReleaseStringUTFChars(valStr, valC);
         env->DeleteLocalRef(keyStr);
-        env->DeleteLocalRef(valStr);
-        env->DeleteLocalRef(entryObj);
+        if (valStr) env->DeleteLocalRef(valStr);
     }
 
     f.file()->setProperties(fileProps);

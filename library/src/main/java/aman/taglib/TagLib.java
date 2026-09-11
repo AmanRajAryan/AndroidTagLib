@@ -36,11 +36,26 @@ public class TagLib {
         return map;
     }
 
+    private static native boolean setMetadataNative(String filePath, String[] rawData);
+
     /**
      * Updates metadata for the file.
      * Keys not present in the input map are preserved. Pass an empty string to delete a tag.
      */
-    public static native boolean setMetadata(String filePath, HashMap<String, String> metadata);
+    public static boolean setMetadata(String filePath, java.util.Map<String, String> metadata) {
+        if (filePath == null || metadata == null) return false;
+        String[] flat = new String[metadata.size() * 2];
+        int idx = 0;
+        for (java.util.Map.Entry<String, String> entry : metadata.entrySet()) {
+            flat[idx++] = entry.getKey();
+            flat[idx++] = entry.getValue() != null ? entry.getValue() : "";
+        }
+        return setMetadataNative(filePath, flat);
+    }
+    
+    public static boolean setMetadata(String filePath, HashMap<String, String> metadata) {
+        return setMetadata(filePath, (java.util.Map<String, String>) metadata);
+    }
     
     /**
      * Returns all artworks/cover art found in the audio file.
