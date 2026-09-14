@@ -15,7 +15,7 @@ AndroidTagLib is an Android library that provides JNI bindings for the TagLib au
 Add to your app-level `build.gradle`:
 ```gradle
 dependencies {
-    implementation("io.github.amanrajaryan:TagLib:1.0.1")
+    implementation("io.github.amanrajaryan:TagLib:1.0.2")
 }
 ```
 

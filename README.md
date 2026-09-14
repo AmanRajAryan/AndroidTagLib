@@ -6,7 +6,7 @@ An Android library providing JNI bindings for TagLib — read and write audio me
 
 ```gradle
 dependencies {
-    implementation("io.github.amanrajaryan:TagLib:1.0.1")
+    implementation("io.github.amanrajaryan:TagLib:1.0.2")
 }
 ```
 
