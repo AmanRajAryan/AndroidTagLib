@@ -1,5 +1,7 @@
 # AndroidTagLib Documentation
 
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.amanrajaryan/TagLib)](https://central.sonatype.com/artifact/io.github.amanrajaryan/TagLib)
+
 ## Overview
 AndroidTagLib is an Android library that provides JNI bindings for the TagLib audio metadata library. It allows Android apps to read and write metadata (tags) in audio files using native TagLib code.
 
@@ -11,21 +13,23 @@ AndroidTagLib is an Android library that provides JNI bindings for the TagLib au
 
 ## Installation
 
-### Via Maven (Recommended)
-Add to your app-level `build.gradle`:
-```gradle
+Add the dependency to your app module's `build.gradle`:
+
+```groovy
+// Groovy DSL
 dependencies {
-    implementation("io.github.amanrajaryan:TagLib:1.0.2")
+    implementation 'io.github.amanrajaryan:TagLib:<version>'
 }
 ```
 
-### Via AAR (Manual)
-Copy `library-release.aar` to your app's `libs/` directory and add:
-```gradle
+```kotlin
+// Kotlin DSL
 dependencies {
-    implementation files('libs/library-release.aar')
+    implementation("io.github.amanrajaryan:TagLib:<version>")
 }
 ```
+
+*(Replace `<version>` with the latest release shown on the Maven Central badge above)*
 
 ## API Reference
 
@@ -33,9 +37,6 @@ dependencies {
 Returns a `HashMap<String, String>` of all metadata for the given file.
 
 ```java
-import aman.taglib.TagLib;
-import java.util.HashMap;
-
 HashMap<String, String> metadata = TagLib.getMetadata("/sdcard/Music/song.mp3");
 
 // Standard tags
@@ -51,7 +52,7 @@ String bitrate    = metadata.get("BITRATE");       // kbps
 String sampleRate = metadata.get("SAMPLERATE");    // Hz
 String channels   = metadata.get("CHANNELS");
 String duration   = metadata.get("DURATION_SEC");  // seconds
-String codec      = metadata.get("FORMAT");        // e.g. "MP3", "FLAC", "AAC", "ALAC"
+String codec      = metadata.get("FORMAT");        // e.g. "MP3", "FLAC", "AAC", "ALAC", "Vorbis", "Opus", "WAV"
 String bitDepth   = metadata.get("BITS_PER_SAMPLE"); // e.g. 16, 24 (lossless formats)
 
 // Custom fields
@@ -61,21 +62,33 @@ String contentRating = metadata.get("CONTENT_RATING");
 
 All keys are uppercase. Only fields present in the file are included in the map.
 
-### `TagLib.setMetadata(String filePath, HashMap<String, String> metadata)`
-Writes metadata to the given file. Returns `true` if successful.
+### `TagLib.setMetadata(String filePath, Map<String, String> metadata)`
+Writes metadata to the audio file. Returns `true` if saved successfully, `false` otherwise. Accepts any `Map<String, String>` (such as `HashMap`).
+
+#### Behavior:
+- **Default (Partial Update)**: Only fields present in the map are modified. All other existing tags on the file remain completely untouched and preserved.
+- **Adding a tag**: Provide a key and its value. If the tag does not exist, it is created.
+- **Updating a tag**: Provide an existing key with a new value to overwrite it.
+- **Deleting a tag**: Set the tag's value to an empty string `""` (or `null`) to erase it from the file.
+- **Key naming**: Keys are uppercase TagLib tag names (e.g. `TITLE`, `ARTIST`, `ALBUM`, `TRACKNUMBER`, `GENRE`, `DATE`, `LYRICS`, `CONTENT_RATING`).
 
 ```java
-HashMap<String, String> meta = new HashMap<>();
+Map<String, String> meta = new HashMap<>();
+
+// 1. Adding or updating tags
 meta.put("TITLE", "My Song");
 meta.put("ARTIST", "Artist Name");
 meta.put("ALBUM", "Album Name");
 meta.put("LYRICS", "These are the lyrics");
-meta.put("CONTENT_RATING", "1");
+meta.put("CONTENT_RATING", "1"); // 0 = None, 1 = Explicit, 2 = Clean
 
+// 2. Deleting tags (pass empty string or null)
+meta.put("COMMENT", "");
+meta.put("GENRE", "");
+
+// Writes changes; all other unmentioned tags are preserved
 boolean success = TagLib.setMetadata("/sdcard/Music/song.flac", meta);
 ```
-
-Only fields present in the map are updated — all other existing tags are preserved. Pass an empty string for a key to delete that tag.
 
 ### `TagLib.getArtwork(String filePath)`
 Returns an array of `TagLib.Artwork` objects found in the file.
@@ -108,6 +121,13 @@ Format-specific behavior:
 - FLAC / OGG / OPUS: writes `METADATA_BLOCK_PICTURE`
 - WMA: writes the `WM/Picture` attribute
 
+### `TagLib.getArtworkDebugInfo(String filePath)`
+Returns a debug string listing raw native TagLib properties found in the file. Useful for inspecting unmapped, custom, or vendor-specific tags.
+
+```java
+String debugInfo = TagLib.getArtworkDebugInfo("/sdcard/Music/song.mp3");
+```
+
 ## Supported Formats
 
 | Format | Read | Write | Artwork |
@@ -136,53 +156,16 @@ AndroidTagLib/
 │   └── taglib/            # TagLib submodule
 ```
 
-## Building from Source
-
-1. **Install OpenJDK 17:**
-    ```bash
-    sudo apt-get update && sudo apt-get install -y openjdk-17-jdk
-    export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-    ```
-
-2. **Install Android SDK & NDK:**
-    ```bash
-    wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O /tmp/cmdline-tools.zip
-    mkdir -p /opt/android-sdk/cmdline-tools
-    unzip /tmp/cmdline-tools.zip -d /opt/android-sdk/cmdline-tools
-    mv /opt/android-sdk/cmdline-tools/cmdline-tools /opt/android-sdk/cmdline-tools/latest
-    export ANDROID_SDK_ROOT=/opt/android-sdk
-    /opt/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platform-tools" "platforms;android-33" "build-tools;33.0.2" "ndk;29.0.14033849"
-    ```
-
-3. **Configure `local.properties`:**
-    ```
-    sdk.dir=/opt/android-sdk
-    ndk.dir=/opt/android-sdk/ndk/29.0.14033849
-    ```
-
-4. **Initialize submodules:**
-    ```bash
-    git submodule update --init --recursive
-    ```
-
-5. **Build the AAR:**
-    ```bash
-    ./gradlew :library:assembleRelease
-    ```
-    Output: `library/build/outputs/aar/library-release.aar`
-
 ## Library Versions
-- TagLib 2.1.1
-- libogg 1.3.5
-- libvorbis 1.3.7
-- opus 1.3.1
-- opusfile 0.12
+- TagLib 2.3.2
 
 ## Compatibility
 - Min SDK: 23
+- Target SDK: 36
+- Compile SDK: 37
 - Tested with OpenJDK 17
 - Compatible with Android Gradle Plugin 8+
-- ABI: arm64-v8a
+- ABI: `arm64-v8a`, `armeabi-v7a`
 
 ## License
 - TagLib: LGPL/MPL
